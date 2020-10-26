@@ -9,8 +9,7 @@ while 1==1
     heads = sum(results(:,1)==0);
     tails = sum(results(:,1)==1);
     sum = heads + tails;
-    fprintf('Number of heads = %d\n', heads);
-    fprintf('Number of tails = %d\n', tails);
+    fprintf('Number of heads = %d\nNumber of tails = %d\n', heads, tails);
     fprintf('Total = %d\n', sum);    
     clear;
 end
