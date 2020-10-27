@@ -25,13 +25,7 @@ results = zeros(n,4); % Reset results array
 % Continuous Distribution in [0,1] (Heads<0.5, Tails>0.5)
 for i = 1:n
     flips = rand(i,1);
-    for j = 1:i
-        if flips(j,1)< 0.5 % If <0.5 is is heads
-            flips(j,1) = 0;
-        else % If >0.5 it is tails
-            flips(j,1) = 1;
-        end
-    end
+    flips = round(flips);
     results(i,1) = i; % Log current number of flips 
     results(i,2) = sum(flips(:,1)==0); % Count heads ( ==0)
     results(i,3) = sum(flips(:,1)==1); % Count tails ( ==1)
