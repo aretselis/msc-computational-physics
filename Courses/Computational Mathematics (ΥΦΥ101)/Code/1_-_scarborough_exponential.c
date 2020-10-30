@@ -19,7 +19,7 @@ int main(){
 	for(i=1;i;i++){
 		temp=temp*x/i;
 		value=value+temp;
-		ea=abs((value-value_prev)/value)*100;
+		ea=fabs((value-value_prev)/value)*100;
 		printf("Value of e^%lf is %lf with ea being %lf\n", x, value, ea);
 		if(ea<es){ /* if approximation error ea below es stop computing */
 			break;
