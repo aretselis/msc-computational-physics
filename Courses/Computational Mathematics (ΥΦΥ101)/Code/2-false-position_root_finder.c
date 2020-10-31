@@ -12,7 +12,7 @@ int main(){
 	printf("Enter lower value: ");
 	scanf("%lf", &xl);
 	xr=xu-((f(xu)*(xl-xu))/(f(xl)-f(xu)));
-	printf("xr equals to %lf\n", xr);
+	/* printf("xr equals to %lf\n", xr);*/
 	printf("Enter the number of significant digits to be computed (Scarborough criterion): ");
 	scanf("%d", &n);
 	es=(0.5*pow(10,(2-n)));
@@ -29,13 +29,13 @@ int main(){
 		}
 		/* Use scarborough as stopping condition */
 		ea=fabs((value-value_prev)*100/value);
-		 printf("Current ea equals %lf", ea); 
+		/* printf("Current ea equals %lf", ea); */
 		if(ea<es){ /* if approximation error ea below es stop computing */
 			break;
 		} 
 		value_prev=xr;
 		xr=xu-((f(xu)*(xl-xu))/(f(xl)-f(xu)));
-		printf("\nxr equals %lf\n", xr); 
+		/* printf("\nxr equals %lf\n", xr); */
 	}
 	printf("\n\nThe root in given interval is equal to %lf", xr);
 	
