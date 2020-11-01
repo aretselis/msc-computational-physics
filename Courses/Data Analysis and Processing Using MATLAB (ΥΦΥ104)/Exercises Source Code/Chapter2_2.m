@@ -16,8 +16,8 @@ fplot(lambda*exp(-lambda*x),[0,8]);
 
 % MATLAB built-in implementation
 
-% figure;
-% hold on;
-% results=exprnd(1,n);
-% histogram(results,'Normalization','pdf');
-% fplot(lambda*exp(-lambda*x),[0,5]);
+%  figure;
+%  hold on;
+%  results=exprnd(1,n);
+%  histogram(results,'Normalization','count');
+%  fplot(lambda*exp(-lambda*x),[0,5]);
