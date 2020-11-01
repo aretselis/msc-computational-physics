@@ -13,6 +13,7 @@ figure;
 hold on;
 histogram(results,'Normalization','pdf');
 fplot(lambda*exp(-lambda*x),[0,8]);
+grid on;
 
 % MATLAB built-in implementation
 
