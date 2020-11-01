@@ -11,8 +11,8 @@ temp=rand(1,n);
 results=-(1/lambda)*log(1-temp);
 figure;
 hold on;
-histogram(results,70,'Normalization','pdf');
-fplot(lambda*exp(-lambda*x),[0,5]);
+histogram(results,'Normalization','pdf');
+fplot(lambda*exp(-lambda*x),[0,8]);
 
 % MATLAB built-in implementation
 
