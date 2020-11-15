@@ -4,10 +4,14 @@
 clear;clc;
 
 % User input
-M = input('Enter number of samples M: ');
-n = input('Enter size of each sample n: ');
-tau = input('Enter tau parameter: ');
+runs = input('Enter number of runs: ');
 
-% Results and diagram
-mean_sim = exponential_simulation(tau, n, M);
-fprintf('Average of every sample mean is %.4f. \n',mean(mean_sim));
+% Results and histogram
+for i=1:runs
+    M=randi([1,10000]);
+    n=randi([1,1000]);
+    tau=randi([1,100]);
+    mean_sim = poisson_simulation(M,n,tau);
+    fprintf(['For M=%d samples with size n=%d and tau=%d, the', ...
+' average of every sample mean is %.4f. \n'],M,n,tau,mean(mean_sim));
+end
