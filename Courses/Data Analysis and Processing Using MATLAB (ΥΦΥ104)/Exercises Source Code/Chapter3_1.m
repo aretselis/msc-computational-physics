@@ -4,10 +4,14 @@
 clear;clc;
 
 % User input
-M = input('Enter number of samples M: ');
-n = input('Enter size of each sample n: ');
-lambda = input('Enter lambda parameter: ');
+runs = input('Enter number of runs: ');
 
 % Results and histogram
-mean_sim = poisson_simulation(M,n,lambda);
-fprintf('Average of every sample mean is %.4f. \n',mean(mean_sim));
+for i=1:runs
+    M=randi([1,10000]);
+    n=randi([1,1000]);
+    lambda=randi([1,100]);
+    mean_sim = poisson_simulation(M,n,lambda);
+    fprintf(['For M=%d samples with size n=%d and lambda=%d, the', ...
+' average of every sample mean is %.4f. \n'],M,n,lambda,mean(mean_sim));
+end
