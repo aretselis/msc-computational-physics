@@ -1,6 +1,5 @@
 function [mean_sim] = exponential_simulation(tau,n,M)
-%EXPONENTIAL_SIMULATION Summary of this function goes here
-%   Detailed explanation goes here
+
 sim = exprnd(tau, n, M);
 mean_sim = mean(sim);
 figure;

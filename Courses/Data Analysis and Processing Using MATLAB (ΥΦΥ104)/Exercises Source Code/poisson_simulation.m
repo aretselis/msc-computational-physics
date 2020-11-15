@@ -1,6 +1,4 @@
 function mean_sim = poisson_simulation(M,n,lambda)
-%POISSON_ Summary of this function goes here
-%   Detailed explanation goes here
 
 sim = poissrnd(lambda, n, M);
 mean_sim = mean(sim);
