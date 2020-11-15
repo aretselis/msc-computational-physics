@@ -1,5 +1,7 @@
 function mean_sim = poisson_simulation(M,n,lambda)
-
+% Data Analysis and Processing using MATLAB (ΥΦΥ104)
+% Solution for exercise Chapter3_1
+% Implemented by Anastasis Retselis
 sim = poissrnd(lambda, n, M);
 mean_sim = mean(sim);
 figure;
