@@ -106,6 +106,7 @@ elseif h==1
 end
 
 %% Check Wikipedia claim
+
 sd_waiting = 10; 
 sd_eruption = 10;
 mv_waiting_low = 65;
@@ -144,7 +145,7 @@ elseif h==1
     fprintf('Hypothesis for mv = %d false\n', mv_waiting_low);
 end
 fprintf('========================================\n');
-[h, p_waiting, ci_waiting] = vartest(low_data(:,1),sd_waiting^2,0.05);
+[h, p_waiting, ci_waiting] = vartest(high_data(:,1),sd_waiting^2,0.05);
 fprintf('Confidence interval for standard deviation (σ) is [%.4f,%.4f]\n', sqrt(ci_waiting(1)), sqrt(ci_waiting(2)));
 fprintf('p-value for hypothesis σ = %d is %.5f\n', sd_waiting, p_waiting);
 if h == 0
