@@ -104,3 +104,60 @@ if h == 0
 elseif h==1
     fprintf('Hypothesis for goodness-of-fit for normal distribution false\n\n');
 end
+
+%% Check Wikipedia claim
+sd_waiting = 10; 
+sd_eruption = 10;
+mv_waiting_low = 65;
+mv_waiting_high = 91;
+mv_eruption = 2.5;
+
+% Split data to high_data and low_data
+
+data_delete = any(data(:,2)>2.5,2);
+data(data_delete,:) = [];
+low_data = data;
+data = importdata('eruption.dat');
+data_delete = any(data(:,2)<2.5,2);
+data(data_delete,:) = [];
+high_data = data;
+data = importdata('eruption.dat');
+
+fprintf('<strong>Wikipedia Claim Check\n</strong>');
+fprintf('<strong>Stats for Waiting time in 1989:\n</strong>');
+fprintf('========================================\n');
+[h, p_waiting, ci_waiting] = vartest(low_data(:,1),sd_waiting^2,0.05);
+fprintf('Confidence interval for standard deviation (σ) is [%.4f,%.4f]\n', sqrt(ci_waiting(1)), sqrt(ci_waiting(2)));
+fprintf('p-value for hypothesis σ = %d is %.5f\n', sd_waiting, p_waiting);
+if h == 0
+    fprintf('Hypothesis for σ true\n');
+elseif h==1
+    fprintf('Hypothesis for σ false\n');
+end
+fprintf('========================================\n');
+[h, p_waiting, ci_waiting] = ttest(low_data(:,1),mv_waiting_low,0.05);
+fprintf('Confidence interval for mean value of waiting time is [%.4f,%.4f]\n', ci_waiting(1), ci_waiting(2));
+fprintf('p-value for hypothesis mv = %d is %.5f\n', mv_waiting_low, p_waiting);
+if h == 0
+    fprintf('Hypothesis for mv = %d true\n', mv_waiting_low);
+elseif h==1
+    fprintf('Hypothesis for mv = %d false\n', mv_waiting_low);
+end
+fprintf('========================================\n');
+[h, p_waiting, ci_waiting] = vartest(low_data(:,1),sd_waiting^2,0.05);
+fprintf('Confidence interval for standard deviation (σ) is [%.4f,%.4f]\n', sqrt(ci_waiting(1)), sqrt(ci_waiting(2)));
+fprintf('p-value for hypothesis σ = %d is %.5f\n', sd_waiting, p_waiting);
+if h == 0
+    fprintf('Hypothesis for σ true\n');
+elseif h==1
+    fprintf('Hypothesis for σ false\n');
+end
+fprintf('========================================\n');
+[h, p_waiting, ci_waiting] = ttest(high_data(:,1),mv_waiting_high,0.05);
+fprintf('Confidence interval for mean value of waiting time is [%.4f,%.4f]\n', ci_waiting(1), ci_waiting(2));
+fprintf('p-value for hypothesis mv = %d is %.5f\n', mv_waiting_high, p_waiting);
+if h == 0
+    fprintf('Hypothesis for mv = %d true\n', mv_waiting_high);
+elseif h==1
+    fprintf('Hypothesis for mv = %d false\n', mv_waiting_high);
+end
