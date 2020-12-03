@@ -91,3 +91,10 @@ grid on;
 
 %% C) Alternating initial height h1 with 1 h2 measurement each time
 
+h1_c = [80 100 90 120 95];
+h2_c = [48 60 50 75 56];
+e_c = sqrt(h2_c ./h1_c);
+sigma_h1_c = std(h1_c);
+sigma_h2_c = std(h2_c);
+sigma_e_c = std(e_c);
+
