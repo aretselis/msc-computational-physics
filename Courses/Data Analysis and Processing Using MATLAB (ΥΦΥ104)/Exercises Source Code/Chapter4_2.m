@@ -42,4 +42,5 @@ figure;
 surf(width_b,length_b,sigma_area_b');
 xlabel('Width, w, [m]','interpreter','latex');
 ylabel('Length, l, [m]','interpreter','latex');
-zlabel('Area Uncertainty, $$\sigma_{A}$$, $$[m^2]$$','interpreter','latex');
+zlabel('Area Uncertainty, $$\sigma_{A}$$, $$[m^2]$$',...
+    'interpreter','latex');
