@@ -1,8 +1,9 @@
 % Data Analysis and Processing using MATLAB (ΥΦΥ104)
 % Solution for exercise Chapter4_1
 % Implemented by Anastasis Retselis
-clear;clc;
+clear;clc;close all;
 
+% Coefficient of restitution e
 % e=sqrt(h2/h1), where
 % h1=initial height
 % h2=height after first contact with ground
