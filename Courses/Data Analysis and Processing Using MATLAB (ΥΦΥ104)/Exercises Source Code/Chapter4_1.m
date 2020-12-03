@@ -23,6 +23,13 @@ n = 5;
 mv_h2 = 58;
 sigma_h2 = 2;
 
+% Calculate reference values for comparison of results
+
+expected_mv_h2 = 58;
+expected_sigma_h2 = 2;
+expected_mv_e = sqrt(expected_mv_h2/h1);
+expected_sigma_e = sqrt((expected_sigma_h2)^2 * 1/(4*expected_mv_h2*h1));
+
 % Create simulation
 
 simulation = normrnd(mv_h2, sigma_h2, n, M);
@@ -61,3 +68,5 @@ title("Standard deviation for e for M = " + M + " experiments");
 xlabel('Standard deviation, \sigma_{e}, [ ]');
 ylabel('Counts');
 grid on;
+
+%% C) Alternating initial height h1 with 1 h2 measurement each time
