@@ -44,9 +44,7 @@ sim_sigma_e = std(e);
 
 figure;
 hold on;
-xl = xline(expected_mv_h2,'-r','LineWidth',1);
-xl.LabelVerticalAlignment = 'middle';
-xl.LabelHorizontalAlignment = 'center';
+xline(expected_mv_h2,'-r','LineWidth',1);
 histogram(sim_mean_h2);
 legend("Expected\newline\mu_{h_2} = " + num2str(expected_mv_h2));
 title("Mean value \mu for h_2 for M = " + M + " experiments");
@@ -56,9 +54,7 @@ grid on;
 
 figure;
 hold on;
-xl = xline(expected_sigma_h2,'-r','LineWidth',1);
-xl.LabelVerticalAlignment = 'middle';
-xl.LabelHorizontalAlignment = 'center';
+xline(expected_sigma_h2,'-r','LineWidth',1);
 histogram(sim_sigma_h2);
 legend("Expected \sigma_{h_2}= " + num2str(expected_sigma_h2));
 title("Standard deviation \sigma for h_2 for M = " + M + " experiments");
@@ -68,9 +64,7 @@ grid on;
 
 figure;
 hold on;
-xl = xline(expected_mv_e,'-r','LineWidth',1);
-xl.LabelVerticalAlignment = 'middle';
-xl.LabelHorizontalAlignment = 'center';
+xline(expected_mv_e,'-r','LineWidth',1);
 histogram(sim_mean_e);
 legend("Expected\newline\mu_e = " + num2str(expected_mv_e,"%1.4f"));
 title("Mean value \mu for e for M = " + M + " experiments");
@@ -80,9 +74,7 @@ grid on;
 
 figure;
 hold on;
-xl = xline(expected_sigma_e,'-r','LineWidth',1);
-xl.LabelVerticalAlignment = 'middle';
-xl.LabelHorizontalAlignment = 'center';
+xline(expected_sigma_e,'-r','LineWidth',1);
 histogram(sim_sigma_e);
 legend("Expected \sigma_e= " + num2str(expected_sigma_e,"%1.4f"));
 title("Standard deviation \sigma for e for M = " + M + " experiments");
