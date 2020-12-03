@@ -43,6 +43,9 @@ sim_sigma_e = std(e);
 
 figure;
 histogram(sim_mean_h2);
+xl = xline(expected_mv_h2,'-r',{'Expected'},'LineWidth',1);
+xl.LabelVerticalAlignment = 'middle';
+xl.LabelHorizontalAlignment = 'center';
 title("Mean value for h_2 for M = " + M + " experiments");
 xlabel('Mean value, \mu_{h_2}, [cm]');
 ylabel('Counts');
@@ -50,6 +53,9 @@ grid on;
 
 figure;
 histogram(sim_sigma_h2);
+xl = xline(expected_sigma_h2,'-r',{'Expected'},'LineWidth',1);
+xl.LabelVerticalAlignment = 'middle';
+xl.LabelHorizontalAlignment = 'center';
 title("Standard deviation for h_2 for M = " + M + " experiments");
 xlabel('Standard deviation, \sigma_{h_2}, [cm]');
 ylabel('Counts');
@@ -57,6 +63,9 @@ grid on;
 
 figure;
 histogram(sim_mean_e);
+xl = xline(expected_mv_e,'-r',{'Expected'},'LineWidth',1);
+xl.LabelVerticalAlignment = 'middle';
+xl.LabelHorizontalAlignment = 'center';
 title("Mean value for e for M = " + M + " experiments");
 xlabel('Mean value, \mu_{e}, [ ]');
 ylabel('Counts');
@@ -64,9 +73,13 @@ grid on;
 
 figure;
 histogram(sim_sigma_e);
+xl = xline(expected_sigma_e,'-r',{'Expected'},'LineWidth',1);
+xl.LabelVerticalAlignment = 'middle';
+xl.LabelHorizontalAlignment = 'center';
 title("Standard deviation for e for M = " + M + " experiments");
 xlabel('Standard deviation, \sigma_{e}, [ ]');
 ylabel('Counts');
 grid on;
 
 %% C) Alternating initial height h1 with 1 h2 measurement each time
+
