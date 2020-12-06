@@ -12,9 +12,21 @@ clear;clc;close all;
 
 h1 = 100;
 h2 = [60 54 58 60 56];
-
+n = length(h2);
 e = sqrt(h2/h1);
+e_mean = mean(e);
 sigma_e = std(e);
+sigma_e_mean = sigma_e/sqrt(n);
+a = 0.05;
+t_critical = tinv(1-a/2, n-1); 
+random_uncertainty_repeat = t_critical*sigma_e;
+random_uncertainty_mean = t_critical*sigma_e_mean;
+
+fprintf(['Standard Deviation: %.4f\nStandard Deviation (mean): %.4f\n',...
+    'Critical student value: %.4f\ne(mean) = %.4f\n',...
+    '\ne(repeat) = %.4f +- %.4f\ne(mean) = %.4f +- %.4f\n'],...
+    sigma_e, sigma_e_mean, t_critical, e_mean, e_mean,...
+    random_uncertainty_repeat, e_mean, random_uncertainty_mean);
 
 
 %% B) Simulate 1000 times the experiment in A)
