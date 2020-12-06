@@ -102,4 +102,7 @@ e_c = sqrt(h2_c ./h1_c);
 sigma_h1_c = std(h1_c);
 sigma_h2_c = std(h2_c);
 sigma_e_c = std(e_c);
+mean_e_c = mean(e_c);
 
+fprintf('\n\nFrom these h1 and h2 measurements, e(mean) = %.3f +- %.3f',...
+    mean_e_c, sigma_e_c);
