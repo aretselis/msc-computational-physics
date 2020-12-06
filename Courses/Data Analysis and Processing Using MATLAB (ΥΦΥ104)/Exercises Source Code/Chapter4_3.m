@@ -11,7 +11,7 @@ mean_V = 77.78;     % V
 sigma_V = 0.71;     % V
 mean_I = 1.21;      % A
 sigma_I = 0.071;    % A
-mean_f = 0.283;          % rad
+mean_f = 0.283;     % rad
 sigma_f = 0.017;    % rad
 
 sigma_P = sqrt((mean_I*cos(mean_f)*sigma_V)^2 + (mean_V*cos(mean_f)*...
@@ -46,12 +46,14 @@ grid on;
 
 %% C) Include ρ_vf in simulation
 
-% One extra term for sigma
+% Calculate expected sigma_P with the extra term
+
 rho_vf = 0.5;
 sigma_P_vf = sqrt((mean_I*cos(mean_f)*sigma_V)^2 + (mean_V*cos(mean_f)*...
     sigma_I)^2 + (-mean_V*mean_I*sin(mean_f)*sigma_f)^2 + 2*mean_I*...
     cos(mean_f)*-mean_V*mean_I*sin(mean_f)*rho_vf*sigma_V*sigma_f);
 
+% Compute covariance matrix, mean vector and run simulation
 
 mean_vector = [mean_V mean_I mean_f];
 cov_matrix = [sigma_V^2 0 0;...
