@@ -55,6 +55,6 @@ p_1 = test_t_1/M;
 p_2 = test_t_2/M;
 
 fprintf(['For (X,Y) with M = %d, L = %d and n = %d the hypothesis',...
-    'p_value is %.4f\n'], M, L, n, p_1);
+    ' p_value is %.4f.\n'], M, L, n, p_1);
 fprintf(['For (X^2,Y^2) with M = %d, L = %d and n = %d the hypothesis',...
-    'p_value is %.4f\n'], M, L, n, p_2);
+    ' p_value is %.4f.\n'], M, L, n, p_2);
