@@ -148,7 +148,7 @@ fprintf(['For ρ = %.1f experiment, the null correlation hypothesis',...
     ' has p_value= %.4f\n'],rho_2,p_2);
 
 %% D) Assume X^2 or Y^2
-% Note that to get the n=200 value, one should change the n to 200 below
+% Note that to get the n=200 value, one should change the n below
 n = 20;
 fprintf('\n\nNow assuming X^2 and Y^2, n = %d\n', n);
 for i=1:M
@@ -186,7 +186,7 @@ histogram(z_1_upper);
 legend('Lower limit','Upper limit');
 title("Confidence Inteval limits for M = "+ M +", n = "+n+" and ρ = "...
     + rho_1);
-xlabel('Value');
+xlabel('Value (squared)');
 ylabel('Counts');
 grid on;
 
@@ -197,7 +197,7 @@ histogram(z_2_upper);
 legend('Lower limit','Upper limit');
 title("Confidence Inteval limits for M = "+ M +", n = "+n+" and ρ = "...
     + rho_2);
-xlabel('Value');
+xlabel('Value (squared)');
 ylabel('Counts');
 grid on;
 
