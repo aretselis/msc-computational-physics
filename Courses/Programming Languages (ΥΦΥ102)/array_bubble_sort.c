@@ -15,7 +15,7 @@ int main(){
 	for (i=0;i<20;i++){
 		numbers[i] = (rand() % (101) + 0);
 	}
-	
+	printf("Bubble Sort Demonstrator:\n\n");
 	printf("Unsorted elements are:\t ");  
     for(i=0; i<20; i++)  
     {  
