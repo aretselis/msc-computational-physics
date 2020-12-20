@@ -15,7 +15,7 @@ plot(air_density,light_speed,'.');
 title(sprintf('Light Speed as a function of air density (r = %.4f)',...
     lightair_corrcoef));
 xlabel('Air Density, ρ, [kg/m^3]')
-ylabel('Light Speed, c_{air}, [m/s]')
+ylabel('Light Speed, c_{air}, [-299000 km/s]')
 grid on;
 
 % Least squares fitting method
@@ -45,3 +45,31 @@ ci_upper_b0 = b0 + (t_critical*s_b0);
 ci_lower_b0 = b0 - (t_critical*s_b0);
 fprintf('%.0f%% Confidence interval for b0 = [%.4f, %.4f]\n',...
     (1-a)*100,ci_lower_b0,ci_upper_b0);
+
+x_interval = air_density;
+y_lsq = b1*x_interval + b0;
+S_ymean = s_e*sqrt((1/n)+((air_density-mean_x).^2/S_xx));
+y_upper_mean = b1*x_interval + b0 + t_critical*S_ymean;
+y_lower_mean = b1*x_interval + b0 - t_critical*S_ymean;
+s_measurement = s_e*sqrt(1+(1/n)+((air_density-mean_x).^2/S_xx));
+y_upper_measurement = b1*x_interval + b0 + t_critical*s_measurement;
+y_lower_measurement = b1*x_interval + b0 - t_critical*s_measurement;
+
+figure;
+hold on;
+plot(air_density,light_speed,'.');
+title(sprintf('Light Speed as a function of air density (r = %.4f)',...
+    lightair_corrcoef));
+plot(x_interval,y_lsq,'-r');
+plot(x_interval,y_upper_mean,'LineStyle','--','Color','#EDB120');
+plot(x_interval,y_upper_measurement,'LineStyle','--','Color','#77AC30');
+plot(x_interval,y_lower_mean,'LineStyle','--','Color','#EDB120');
+plot(x_interval,y_lower_measurement,'LineStyle','--','Color','#77AC30');
+legend('Data Measurements',sprintf('y = %.4fx + %.4f', b1, b0),...
+    'Confidence Interval (mean value)',...
+    'Confidence Interval (measurement)');
+xlabel('Air Density, ρ, [kg/m^3]')
+ylabel('Light Speed, c_{air}, [-299000 km/s]')
+grid on;
+
+% Calculate for density=1.29
