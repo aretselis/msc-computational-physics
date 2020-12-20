@@ -63,7 +63,8 @@ b0_upper_ci_sim = b0_sorted(upper_limit,1);
 b1_lower_ci_sim = b1_sorted(lower_limit,2);
 b1_upper_ci_sim = b1_sorted(upper_limit,2);
 
-fprintf('\nBootstrap %.0f%% Confidence interval for b1 = [%.4f, %.4f]\n',...
+fprintf('\nRunning simulation M = %d times...\n', M);
+fprintf('Bootstrap %.0f%% Confidence interval for b1 = [%.4f, %.4f]\n',...
     (1-a)*100, b1_lower_ci_sim, b1_upper_ci_sim);
 fprintf('Bootstrap %.0f%% Confidence interval for b0 = [%.4f, %.4f]\n',...
     (1-a)*100, b0_lower_ci_sim, b0_upper_ci_sim);
