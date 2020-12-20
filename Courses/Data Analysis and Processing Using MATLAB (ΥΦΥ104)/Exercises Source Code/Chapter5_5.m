@@ -32,7 +32,7 @@ ci_lower_b0 = b0 - (t_critical*s_b0);
 fprintf('Parametric %.0f%% Confidence interval for b0 = [%.4f, %.4f]\n',...
     (1-a)*100,ci_lower_b0,ci_upper_b0);
 
-% Calculate bootstrap results
+% Perform simulation M times, calculating b0 and b1
 
 M = 1000;
 b_values = zeros(M,2);
@@ -49,3 +49,21 @@ for i=1:M
     b_values(i,1) = b0_sim;
     b_values(i,2) = b1_sim;
 end
+
+% Sort b_values based on b0 or b1 and extract results
+
+b0_sorted = sortrows(b_values, 1);
+b1_sorted = sortrows(b_values, 2);
+
+lower_limit = M*a/2;
+upper_limit = M*(1-a/2);
+
+b0_lower_ci_sim = b0_sorted(lower_limit,1);
+b0_upper_ci_sim = b0_sorted(upper_limit,1);
+b1_lower_ci_sim = b1_sorted(lower_limit,2);
+b1_upper_ci_sim = b1_sorted(upper_limit,2);
+
+fprintf('\nBootstrap %.0f%% Confidence interval for b1 = [%.4f, %.4f]\n',...
+    (1-a)*100, b1_lower_ci_sim, b1_upper_ci_sim);
+fprintf('Bootstrap %.0f%% Confidence interval for b0 = [%.4f, %.4f]\n',...
+    (1-a)*100, b0_lower_ci_sim, b0_upper_ci_sim);
