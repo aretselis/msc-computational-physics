@@ -32,3 +32,20 @@ ci_lower_b0 = b0 - (t_critical*s_b0);
 fprintf('Parametric %.0f%% Confidence interval for b0 = [%.4f, %.4f]\n',...
     (1-a)*100,ci_lower_b0,ci_upper_b0);
 
+% Calculate bootstrap results
+
+M = 1000;
+b_values = zeros(M,2);
+for i=1:M
+    index = unidrnd(n,n,1);
+    sim_x = air_density(index);
+    sim_y = light_speed(index);
+    mean_sim_x = mean(air_density);
+    mean_sim_y = mean(light_speed);
+    S_xy_sim = sum((sim_x-mean_sim_x).*(sim_y-mean_sim_y));
+    S_xx_sim = sum((sim_x-mean_sim_x).^2);
+    b1_sim = S_xy_sim/S_xx_sim;
+    b0_sim = mean_sim_y-b1_sim*mean_sim_x;
+    b_values(i,1) = b0_sim;
+    b_values(i,2) = b1_sim;
+end
