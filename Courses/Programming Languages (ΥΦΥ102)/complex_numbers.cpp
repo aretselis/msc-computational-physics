@@ -10,9 +10,6 @@ public:
 		real = x;
 		imag = y;
 	}
-	void print(){
-		cout << real << " + "<< imag <<"i"<< endl;
-	}
 	friend Complex operator+(const Complex &a, const Complex &b);
 	friend Complex operator-(const Complex &a, const Complex &b);
 	friend Complex operator*(const Complex &a, const Complex &b);
@@ -37,15 +34,17 @@ Complex operator*(const Complex &a, const Complex &b){
 };
 
 ostream& operator<<(ostream& o, Complex a){
-   o << "(" << a.real << ", " << a.imag << ")";
+   o << "(" << a.real << ", " << a.imag << ")"<< endl;
    return o;
 };
 
-
 int main(){
+	int l = 5;
 	Complex a(2,3);
 	Complex b(1,5);
-    Complex c = a * b;
-    cout << a;
+    cout << a << b;
+    cout << a + b << a - b <<  a*b;
+    cout << 5 + a;
+    cout << a + 5;
 	return 0;
 }
