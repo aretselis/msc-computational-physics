@@ -71,7 +71,7 @@ int main(){
 	}
 	printf("Merge Sort Demonstrator:\n\n");
 	printf("Unsorted elements are:\t ");  
-    for(i=0; i<20; i++)  
+    for(i=0; i<elements; i++)  
     {  
         printf("%d  ", numbers[i]);
 	}
@@ -81,7 +81,7 @@ int main(){
 	
 	printf("\n\nSorted elements are:\t ");  
 	
-    for(i=0; i<20; i++)  
+    for(i=0; i<elements; i++)  
     {  
         printf("%d  ", numbers[i]);
 	}

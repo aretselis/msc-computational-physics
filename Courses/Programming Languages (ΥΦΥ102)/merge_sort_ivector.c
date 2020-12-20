@@ -90,7 +90,7 @@ int main(){
 	int i,j,min,temp;
 	time_t t;
 	srand((unsigned) time(&t));
-	for (i=1;i<=20;i++){
+	for (i=1;i<=elements;i++){
 		numbers[i] = (rand() % (101) + 0);
 	}
 	printf("Merge Sort Demonstrator:\n\n");
@@ -105,7 +105,7 @@ int main(){
 	
 	printf("\n\nSorted elements are:\t ");  
 	
-    for(i=1; i<=20; i++)  
+    for(i=1; i<=elements; i++)  
     {  
         printf("%d  ", numbers[i]);
 	}
