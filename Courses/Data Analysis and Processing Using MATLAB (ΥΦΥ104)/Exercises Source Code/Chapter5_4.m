@@ -85,5 +85,38 @@ ci_upper_measurement = b1*x_value + b0 + t_critical*s_measurement_value;
 ci_lower_measurement = b1*x_value + b0 - t_critical*s_measurement_value;
 fprintf('%.0f%% CI for mean value is [%.4f, %.4f]\n',...
     (1-a)*100,ci_lower_mean_value,ci_upper_mean_value);
-fprintf('%.0f%% CI for next measrement is [%.4f, %.4f]\n',...
+fprintf('%.0f%% CI for next measurement is [%.4f, %.4f]\n\n',...
     (1-a)*100,ci_lower_measurement,ci_upper_measurement);
+
+% Compare actual formula 
+
+c = 299792.458;
+d0 = 1.29;
+b0_actual = c - 299000; 
+b1_actual = -0.00029*c/1.29;
+y_value_actual = b1_actual*x_value + b0_actual;
+fprintf('Based on the actual formula, the equation is:\n');
+fprintf('y = %.4f*x + %.4f\n', b1_actual, b0_actual);
+if b0_actual>ci_lower_b0 && b0_actual<ci_upper_b0
+    fprintf('b0 = %.4f inside %.0f%% CI specified in b [%.4f, %.4f]\n',...
+    b0_actual,(1-a)*100, ci_lower_b0, ci_upper_b0);
+else 
+    fprintf('b0 = %.4f outside %.0f%% CI specified in b [%.4f, %.4f]\n',...
+    b0_actual,(1-a)*100, ci_lower_b0, ci_upper_b0);
+end
+if b1_actual>ci_lower_b1 && b1_actual<ci_upper_b1
+    fprintf('b1 = %.4f inside %.0f%% CI specified in b [%.4f, %.4f]\n',...
+    b1_actual,(1-a)*100, ci_lower_b1, ci_upper_b1);
+else 
+    fprintf('b1 = %.4f outside %.0f%% CI specified in b [%.4f, %.4f]\n',...
+    b1_actual,(1-a)*100, ci_lower_b1, ci_upper_b1);
+end
+fprintf('\nFor x = %.2f , y_actual = %.4f\n', x_value, y_value_actual);
+if y_value_actual>ci_lower_mean_value && y_value_actual<ci_upper_mean_value
+    fprintf('c_actual = %.4f inside %.0f%% CI specified [%.4f, %.4f]\n',...
+    y_value_actual,(1-a)*100, ci_lower_mean_value, ci_upper_mean_value);
+else 
+    fprintf('c_actual = %.4f outside %.0f%% CI specified [%.4f, %.4f]\n',...
+    y_value_actual,(1-a)*100, ci_lower_mean_value, ci_upper_mean_value);
+end
+
