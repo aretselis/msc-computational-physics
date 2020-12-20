@@ -43,7 +43,7 @@ fprintf('%.0f%% Confidence interval for b1 = [%.4f, %.4f]\n',...
 s_b0 = s_e*sqrt((1/n)+(mean_x^2/S_xx));
 ci_upper_b0 = b0 + (t_critical*s_b0);
 ci_lower_b0 = b0 - (t_critical*s_b0);
-fprintf('%.0f%% Confidence interval for b0 = [%.4f, %.4f]\n',...
+fprintf('%.0f%% Confidence interval for b0 = [%.4f, %.4f]\n\n',...
     (1-a)*100,ci_lower_b0,ci_upper_b0);
 
 x_interval = air_density;
@@ -73,3 +73,17 @@ ylabel('Light Speed, c_{air}, [-299000 km/s]')
 grid on;
 
 % Calculate for density=1.29
+
+x_value = 1.29;
+y_value = b1*x_value + b0;
+fprintf('For x=%.2f , y=%.4f\n', x_value, y_value);
+S_ymean_value = s_e*sqrt((1/n)+((x_value-mean_x).^2/S_xx));
+ci_upper_mean_value = b1*x_value + b0 + t_critical*S_ymean_value;
+ci_lower_mean_value = b1*x_value + b0 - t_critical*S_ymean_value;
+s_measurement_value = s_e*sqrt(1+(1/n)+((x_value-mean_x).^2/S_xx));
+ci_upper_measurement = b1*x_value + b0 + t_critical*s_measurement_value;
+ci_lower_measurement = b1*x_value + b0 - t_critical*s_measurement_value;
+fprintf('%.0f%% CI for mean value is [%.4f, %.4f]\n',...
+    (1-a)*100,ci_lower_mean_value,ci_upper_mean_value);
+fprintf('%.0f%% CI for next measrement is [%.4f, %.4f]\n',...
+    (1-a)*100,ci_lower_measurement,ci_upper_measurement);
