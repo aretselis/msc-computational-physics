@@ -55,6 +55,7 @@ s_measurement = s_e*sqrt(1+(1/n)+((air_density-mean_x).^2/S_xx));
 y_upper_measurement = b1*x_interval + b0 + t_critical*s_measurement;
 y_lower_measurement = b1*x_interval + b0 - t_critical*s_measurement;
 
+opengl software;
 figure;
 hold on;
 plot(air_density,light_speed,'.');
