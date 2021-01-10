@@ -39,6 +39,7 @@ plot(x_values,y_linear_lsq)
 title(['Linear fit of data, r = ', num2str(r)])
 xlabel('Distance, x, [10^3 km]')
 ylabel('% usable')
+legend('Data Points', sprintf('y = %.4f %.4f x', b0, b1));
 
 % Compute and plot diagnostic plot
 e_i = y_values - y_linear_lsq;
@@ -79,6 +80,7 @@ plot(x_values,y_exp_lsq)
 title(['Exponential fit of data, r = ', num2str(exp_r)])
 xlabel('Distance, x, [10^3 km]')
 ylabel('ln(% usable)')
+legend('Data Points', sprintf('y'' = %.4f %.4f x', e_b0, e_b1));
 
 % Compute and plot diagnostic plot
 exp_e_i = e_y_values - y_exp_lsq;
@@ -121,6 +123,7 @@ plot(pow_x_values,y_pow_lsq)
 title(['Power fit of data, r = ', num2str(pow_r)])
 xlabel('Distance, log(x), [log(10^3 km)]')
 ylabel('log(% usable)')
+legend('Data Points', sprintf('y'' = %.4f %.4f x''', pow_b0, pow_b1));
 
 % Compute and plot diagnostic plot
 pow_e_i = pow_y_values - y_pow_lsq;
@@ -162,6 +165,7 @@ plot(log_x_values,y_log_lsq)
 title(['y=a+blog(x) fit of data, r = ', num2str(log_r)])
 xlabel('Distance, log(x), [log(10^3 km)]')
 ylabel('% usable')
+legend('Data Points', sprintf('y = %.4f %.4f x''', log_b0, log_b1));
 
 % Compute and plot diagnostic plot
 log_e_i = log_y_values - y_log_lsq;
@@ -203,6 +207,7 @@ plot(inv_x_values,y_inv_lsq)
 title(['Inverse fit of data, r = ', num2str(inv_r)])
 xlabel('Distance, 1/x, [1/(10^3 km)]')
 ylabel('% usable')
+legend('Data Points', sprintf('y = %.4f+%.4f x''', inv_b0, inv_b1));
 
 % Compute and plot diagnostic plot
 inv_e_i = inv_y_values - y_inv_lsq;
@@ -213,7 +218,7 @@ hold on;
 grid on;
 yline(2,'-r')
 yline(-2,'-r')
-plot(y_log_lsq,log_e_i_star,'.');
+plot(y_inv_lsq,inv_e_i_star,'.');
 title('Diagnostic plot')
 xlabel('% usable')
 ylabel('e_i*')
@@ -245,6 +250,6 @@ plot(x_plot,y_plot);
 plot([point(1), point(1)], [0, point(2)], '--m')  
 plot([0, point(1)], [point(2), point(2)], '--m') 
 title(['Exponential fit of data, r = ', num2str(exp_r)]);
-legend('Data Points', sprintf('y = %.2f e^{(%.4fx)}', exp(e_b0), e_b1));
+legend('Data Points', sprintf('y = %.2f e^{%.4fx}', exp(e_b0), e_b1));
 xlabel('Distance, x, [10^3 km]')
 ylabel('% usable')
