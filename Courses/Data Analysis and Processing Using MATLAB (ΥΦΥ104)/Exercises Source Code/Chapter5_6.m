@@ -36,8 +36,8 @@ hold on;
 grid on;
 plot(x_values,y_values,'.')
 plot(x_values,y_linear_lsq)
-title(['Linear fit of data, r= ', num2str(r)])
-xlabel('Distance, [x], 10^3 km')
+title(['Linear fit of data, r = ', num2str(r)])
+xlabel('Distance, x, [10^3 km]')
 ylabel('% usable')
 
 % Compute and plot diagnostic plot
@@ -76,8 +76,8 @@ hold on;
 grid on;
 plot(x_values,e_y_values,'.')
 plot(x_values,y_exp_lsq)
-title(['Exponential fit of data, r= ', num2str(exp_r)])
-xlabel('Distance, [x], 10^3 km')
+title(['Exponential fit of data, r = ', num2str(exp_r)])
+xlabel('Distance, x, [10^3 km]')
 ylabel('ln(% usable)')
 
 % Compute and plot diagnostic plot
@@ -118,8 +118,8 @@ hold on;
 grid on;
 plot(pow_x_values,pow_y_values,'.')
 plot(pow_x_values,y_pow_lsq)
-title(['Power fit of data, r= ', num2str(pow_r)])
-xlabel('Distance, [log(x)], log(10^3 km)')
+title(['Power fit of data, r = ', num2str(pow_r)])
+xlabel('Distance, log(x), [log(10^3 km)]')
 ylabel('log(% usable)')
 
 % Compute and plot diagnostic plot
@@ -159,8 +159,8 @@ hold on;
 grid on;
 plot(log_x_values,log_y_values,'.')
 plot(log_x_values,y_log_lsq)
-title(['y=a+blog(x) fit of data, r= ', num2str(log_r)])
-xlabel('Distance, [log(x)], log(10^3 km)')
+title(['y=a+blog(x) fit of data, r = ', num2str(log_r)])
+xlabel('Distance, log(x), [log(10^3 km)]')
 ylabel('% usable')
 
 % Compute and plot diagnostic plot
@@ -200,8 +200,8 @@ hold on;
 grid on;
 plot(inv_x_values,inv_y_values,'.')
 plot(inv_x_values,y_inv_lsq)
-title(['Inverse fit of data, r= ', num2str(inv_r)])
-xlabel('Distance, 1/x, 1/(10^3 km)')
+title(['Inverse fit of data, r = ', num2str(inv_r)])
+xlabel('Distance, 1/x, [1/(10^3 km)]')
 ylabel('% usable')
 
 % Compute and plot diagnostic plot
@@ -217,3 +217,34 @@ plot(y_log_lsq,log_e_i_star,'.');
 title('Diagnostic plot')
 xlabel('% usable')
 ylabel('e_i*')
+
+%% Extract results and make prediction
+
+fprintf(['Based on the diagnostic plots and r-values, we can conclude',...
+    ' that the best fit is the exponential function.\n\n']);
+
+fprintf('In linear form:');
+fprintf('\nln(y) = ln(a) + bx\n');
+fprintf('ln(y) = %.4f + %.4fx', e_b0, e_b1);
+fprintf('\n\nIn exponential form:\n');
+fprintf('y = a e^(bx)\n');
+fprintf('y = %.2f e^(%.4fx)\n', exp(e_b0), e_b1);
+
+prediction = 25;
+result = exp(e_b0)*exp(e_b1.*prediction);
+point = [prediction, result];
+fprintf('For x = 25000 km, the tyres would be %.2f %% usable.\n', result)
+
+x_plot = 0:0.1:100;
+y_plot = exp(e_b0)*exp(e_b1.*x_plot);
+figure;
+hold on;
+grid on;
+plot(x_values,y_values,'.');
+plot(x_plot,y_plot);
+plot([point(1), point(1)], [0, point(2)], '--m')  
+plot([0, point(1)], [point(2), point(2)], '--m') 
+title(['Exponential fit of data, r = ', num2str(exp_r)]);
+legend('Data Points', sprintf('y = %.2f e^{(%.4fx)}', exp(e_b0), e_b1));
+xlabel('Distance, x, [10^3 km]')
+ylabel('% usable')
