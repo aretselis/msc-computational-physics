@@ -10,7 +10,7 @@ tyre_data = [2 98.2
         32 36.4
         48 32.6
         64 17.1
-        80 11.33];
+        80 11.3];
     
 x_values = tyre_data(:,1);
 y_values = tyre_data(:,2);
