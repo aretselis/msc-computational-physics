@@ -48,7 +48,7 @@ limit = norminv(1-a/2);
 % First degree
 k = 1;
 first_degree_X = [ones(size) resistance_data];
-[b_1,bint,r,rint,stats] = regress(temperature_data, first_degree_X);
+[b_1,~,~,~,~] = regress(temperature_data, first_degree_X);
 y_regression_first = first_degree_X * b_1;
 diagnostic_plot(temperature_data, y_regression_first,...
    resistance_data, n, k);
@@ -56,7 +56,7 @@ diagnostic_plot(temperature_data, y_regression_first,...
 % Second degree
 k = 2;
 second_degree_X = [ones(size) resistance_data resistance_data.^2];
-[b_2,bint,r,rint,stats] = regress(temperature_data, second_degree_X);
+[b_2,~,~,~,~] = regress(temperature_data, second_degree_X);
 y_regression_second = second_degree_X * b_2;
 diagnostic_plot(temperature_data, y_regression_second,...
    resistance_data, n, k);
@@ -65,7 +65,7 @@ diagnostic_plot(temperature_data, y_regression_second,...
 k = 3;
 third_degree_X = [ones(size) resistance_data resistance_data.^2 ...
     resistance_data.^3];
-[b_3,bint,r,rint,stats] = regress(temperature_data, third_degree_X);
+[b_3,~,~,~,~] = regress(temperature_data, third_degree_X);
 y_regression_third = third_degree_X * b_3;
 diagnostic_plot(temperature_data,y_regression_third,...
    resistance_data, n, k);
@@ -74,7 +74,7 @@ diagnostic_plot(temperature_data,y_regression_third,...
 k = 4;
 fourth_degree_X = [ones(size) resistance_data resistance_data.^2 ...
     resistance_data.^3 resistance_data.^4];
-[b_4,bint,r,rint,stats] = regress(temperature_data, fourth_degree_X);
+[b_4,~,~,~,~] = regress(temperature_data, fourth_degree_X);
 y_regression_fourth = fourth_degree_X * b_4;
 diagnostic_plot(temperature_data,y_regression_fourth,...
    resistance_data, n, k);
@@ -99,7 +99,12 @@ plot(resistance_data,y_regression_third)
 title('Polynomial fit of degree = 3')
 xlabel('ln(R)')
 ylabel('1/T')
-legend('Data Points', 'degree=3');
+R2 = 1 - (sum((temperature_data-y_regression_third).^2)/...
+    sum((temperature_data -mean(temperature_data )).^2));
+adjR2 = 1-(sum((temperature_data-y_regression_third).^2)/...
+    sum((temperature_data-mean(temperature_data)).^2)*(n-1)/(n-(3+1)));
+legend('Data Points',sprintf('degree=3\nR^2=%.6f\nadjR^2=%.6f',R2,...
+    adjR2));
 % Diagnostic Plot
 e_i = temperature_data - y_regression_third;
 s_e = sqrt(sum((temperature_data-y_regression_third).^2)/(n-k+1));
@@ -117,7 +122,7 @@ ylabel('e_i*')
 % Compute and plot Steinhart-Hart model
 
 steinhart_X = [ones(size) resistance_data resistance_data.^3];
-[b_s,bint,r,rint,stats] = regress(temperature_data, steinhart_X);
+[b_s,~,~,~,~] = regress(temperature_data, steinhart_X);
 y_regression_steinhart = steinhart_X * b_s;
 % Fitting plot
 subplot(2,2,3);
@@ -128,7 +133,12 @@ plot(resistance_data,y_regression_steinhart)
 title('Steinhart-Hart model')
 xlabel('ln(R)')
 ylabel('1/T')
-legend('Data Points', 'Steinhart-Hart model');
+R2 = 1 - (sum((temperature_data-y_regression_steinhart).^2)/...
+    sum((temperature_data -mean(temperature_data )).^2));
+adjR2 = 1-(sum((temperature_data-y_regression_steinhart).^2)/...
+    sum((temperature_data-mean(temperature_data)).^2)*(n-1)/(n-(3+1)));
+legend('Data Points',sprintf('Steinhart-Hart model\nR^2=%.6f\nadjR^2=%.6f',R2,...
+    adjR2));
 % Diagnostic Plot
 e_i = temperature_data - y_regression_steinhart;
 s_e = sqrt(sum((temperature_data-y_regression_steinhart).^2)/(n-k+1));
@@ -167,6 +177,9 @@ function diagnostic_plot(y_values, y_hat, x_values, n, k)
     xlabel('1/T')
     ylabel('e_i*')
     % Fitting plot
+    R2 = 1 - (sum((y_values-y_hat).^2)/sum((y_values-mean(y_values)).^2));
+    adjR2 = 1-(sum((y_values-y_hat).^2)/sum((y_values-mean(y_values)).^2)*...
+        (n-1)/(n-(k+1)));
     subplot(4,2,2*k-1);
     hold on;
     grid on;
@@ -175,5 +188,6 @@ function diagnostic_plot(y_values, y_hat, x_values, n, k)
     title(['Polynomial fit of degree = ', num2str(k)])
     xlabel('ln(R)')
     ylabel('1/T')
-    legend('Data Points', sprintf('degree=%d', k));
+    legend('Data Points',sprintf('degree=%d\nR^2=%.6f\nadjR^2=%.6f',k,R2,...
+        adjR2));
 end
