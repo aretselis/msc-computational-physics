@@ -104,7 +104,7 @@ R2 = 1 - (sum((temperature_data-y_regression_third).^2)/...
 adjR2 = 1-(sum((temperature_data-y_regression_third).^2)/...
     sum((temperature_data-mean(temperature_data)).^2)*(n-1)/(n-(3+1)));
 legend('Data Points',sprintf('degree=3\nR^2=%.6f\nadjR^2=%.6f',R2,...
-    adjR2));
+    adjR2),'Location', 'southeast');
 % Diagnostic Plot
 e_i = temperature_data - y_regression_third;
 s_e = sqrt(sum((temperature_data-y_regression_third).^2)/(n-k+1));
@@ -137,8 +137,9 @@ R2 = 1 - (sum((temperature_data-y_regression_steinhart).^2)/...
     sum((temperature_data -mean(temperature_data )).^2));
 adjR2 = 1-(sum((temperature_data-y_regression_steinhart).^2)/...
     sum((temperature_data-mean(temperature_data)).^2)*(n-1)/(n-(3+1)));
-legend('Data Points',sprintf('Steinhart-Hart model\nR^2=%.6f\nadjR^2=%.6f',R2,...
-    adjR2));
+legend('Data Points',...
+    sprintf('Steinhart-Hart model\nR^2=%.6f\nadjR^2=%.6f',R2,adjR2),...
+    'Location', 'southeast');
 % Diagnostic Plot
 e_i = temperature_data - y_regression_steinhart;
 s_e = sqrt(sum((temperature_data-y_regression_steinhart).^2)/(n-k+1));
@@ -178,8 +179,8 @@ function diagnostic_plot(y_values, y_hat, x_values, n, k)
     ylabel('e_i*')
     % Fitting plot
     R2 = 1 - (sum((y_values-y_hat).^2)/sum((y_values-mean(y_values)).^2));
-    adjR2 = 1-(sum((y_values-y_hat).^2)/sum((y_values-mean(y_values)).^2)*...
-        (n-1)/(n-(k+1)));
+    adjR2 = 1-(sum((y_values-y_hat).^2)/...
+        sum((y_values-mean(y_values)).^2)*(n-1)/(n-(k+1)));
     subplot(4,2,2*k-1);
     hold on;
     grid on;
@@ -188,6 +189,6 @@ function diagnostic_plot(y_values, y_hat, x_values, n, k)
     title(['Polynomial fit of degree = ', num2str(k)])
     xlabel('ln(R)')
     ylabel('1/T')
-    legend('Data Points',sprintf('degree=%d\nR^2=%.6f\nadjR^2=%.6f',k,R2,...
-        adjR2));
+    legend('Data Points',sprintf('degree=%d\nR^2=%.6f\nadjR^2=%.6f',k,...
+        R2, adjR2),'Location', 'southeast');
 end
