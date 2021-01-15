@@ -40,6 +40,8 @@ resistance_data = log(data(:,2));
 temperature_data = 1./(data(:,3) + 273.15);
 n = length(resistance_data);
 size = size(resistance_data);
+a = 0.05;
+limit = norminv(1-a/2);
 
 %% Find degree of best polynomial fit
 
@@ -105,8 +107,8 @@ e_i_star = e_i/s_e;
 subplot(2,2,2)
 hold on;
 grid on;
-yline(2,'-r')
-yline(-2,'-r')
+yline(limit,'-r')
+yline(-limit,'-r')
 plot(y_regression_third,e_i_star,'.');
 title('Diagnostic plot')
 xlabel('1/T')
@@ -134,8 +136,8 @@ e_i_star = e_i/s_e;
 subplot(2,2,4)
 hold on;
 grid on;
-yline(2,'-r')
-yline(-2,'-r')
+yline(limit,'-r')
+yline(-limit,'-r')
 plot(y_regression_steinhart,e_i_star,'.');
 title('Diagnostic plot')
 xlabel('1/T')
@@ -153,11 +155,13 @@ function diagnostic_plot(y_values, y_hat, x_values, n, k)
     s_e = sqrt(sum((y_values-y_hat).^2)/(n-k+1));
     e_i_star = e_i/s_e;
     % Diagnostic Plot
+    a = 0.05;
+    limit = norminv(1-a/2);
     subplot(4,2,2*k)
     hold on;
     grid on;
-    yline(2,'-r')
-    yline(-2,'-r')
+    yline(limit,'-r')
+    yline(-limit,'-r')
     plot(y_hat,e_i_star,'.');
     title('Diagnostic plot')
     xlabel('1/T')
