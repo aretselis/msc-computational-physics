@@ -21,14 +21,23 @@ def runge_kutta_4(x0, y0, xmax, h):
 
 
 def f(x, y):
+    # Assuming y'(x)=f(x,y)
+    # This example uses y'(x)=y(x)*cos(x+y(x))
     return y * m.cos(x + y)
 
 
+# Test the implementation:
+# Define initial conditions, search interval and step size
 x_0 = 0
 y_0 = 1
 interval = [0, 10]
 step = 0.001
-
+# Extract and plot the solution
 xplot, yplot = runge_kutta_4(x_0, y_0, interval[1], step)
 plt.plot(xplot, yplot)
+plt.title('Numerical Solution for y\'(x)=y(x)cos(x+y(x)) in [0, 10]'
+          '\nBased on 4th Order Runge Kutta')
+plt.xlabel('x')
+plt.ylabel('y')
+plt.grid()
 plt.show()
