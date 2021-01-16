@@ -29,6 +29,8 @@ k = length(data(1,:));
 x_data_reg = [ones(n,1) data];
 [b_coefs,b_ints,~,~,~] = regress(mass_data, x_data_reg);
 y_regression = x_data_reg * b_coefs;
+e_i = mass_data-y_regression;
+s_e2_all = sum((mass_data-y_regression).^2)/(n-k+1);
 R2_all = 1 - (sum((mass_data-y_regression).^2)/...
     sum((mass_data-mean(mass_data)).^2));
 adjR2_all = 1-(sum((mass_data-y_regression).^2)/...
@@ -44,6 +46,7 @@ for i=2:length(headers)
     fprintf('[%.3f, %.3f]\n', b_ints(i+1), b_ints(i+2));
 end
 
+fprintf('\nVariance of e_i: σ_ε^2 = %.4f', s_e2_all);
 fprintf('\nR^2\t   = %.4f', R2_all);
 fprintf('\nadjR^2 = %.4f', adjR2_all);
 
