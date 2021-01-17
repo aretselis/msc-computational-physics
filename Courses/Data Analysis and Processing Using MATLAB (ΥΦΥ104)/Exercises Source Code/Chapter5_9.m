@@ -71,3 +71,31 @@ end
 fprintf('\nVariance of e_i: σ_ε^2 = %.4f', s_e2_step);
 fprintf('\nR^2\t   = %.4f', R2_step);
 fprintf('\nadjR^2 = %.4f\n', adjR2_step);
+
+%% Multicollinearity check 
+
+fprintf('\nNow checking for multicollinearity...\n\n');
+
+for i=2:length(headers)
+    fprintf('Regression model for variable %s\n', headers{i});
+    mc_check_data = data;
+    mx_xj = mc_check_data(:,i-1);
+    mc_check_data(:,i-1) = [];
+    mc_check_data = [ones(n,1) mc_check_data];
+    [R2, adjR2] = multicollinearity_check(mx_xj, mc_check_data);
+    fprintf('R^2 = %.4f\n', R2);
+    fprintf('adjR^2 = %.4f\n\n', adjR2);
+end
+
+function [R2_mc, adjR2_mc] = multicollinearity_check(xj_data, x_rest_data)
+    % Conduct a multicollinearity check based on linear regression
+    % Input: xj variable to be researched, and remaining variables
+    n_mc = length(xj_data);
+    k_mc = size(x_rest_data, 2)-1;
+    b_coef_mc = regress(xj_data, x_rest_data);
+    xj_regression_mc = x_rest_data * b_coef_mc;
+    R2_mc = 1 - (sum((xj_data-xj_regression_mc).^2)/...
+    sum((xj_data-mean(xj_data)).^2));
+    adjR2_mc = 1-(sum((xj_data-xj_regression_mc).^2)/...
+    sum((xj_data-mean(xj_data)).^2)*(n_mc-1)/(n_mc-(k_mc+1)));
+end
