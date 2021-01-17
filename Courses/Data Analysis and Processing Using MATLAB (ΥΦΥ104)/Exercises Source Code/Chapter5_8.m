@@ -25,7 +25,7 @@ adjR2_all = 1-(sum((mass_data-y_regression).^2)/...
 fprintf('Linear regression based on all variables:\n\n');
 fprintf('Variable\t\tb_coeff\t\t95%% Confidence Interval\n');
 fprintf('%8s\t\t%.3f\t\t[%.3f, %.3f]\n','Constant',b_coefs(1),...
-    b_ints(1), b_ints(2));
+    b_ints(1,1), b_ints(1,2));
 for i=2:length(headers)
     fprintf('%8s\t\t', headers{i});
     fprintf('%.3f\t\t', b_coefs(i));
