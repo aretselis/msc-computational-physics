@@ -34,7 +34,8 @@ sigma_x_formula = sqrt(sum((experiment_data-mean_formula).^2)/(m-1)); % std base
 sigma_x_builtin = std(experiment_data); % std based on built-in function
 
 % Print results
-fprintf('Random numbers in [-0.5, 0.5] for m = %d runs...\n', m);
+fprintf('Uniform random numbers with mean = %d and variance = %d for m = %d runs...\n',...
+    mean_input, variance_input, m);
 fprintf('Mean = %.4f\n', mean_builtin);
 fprintf('sigma_x = %.4f\n\n', sigma_x_builtin);
 
@@ -54,7 +55,8 @@ mean_data_mean = mean(mean_experiment);
 std_data_mean = std(mean_experiment,0,2);
 
 % Print results
-fprintf('Mean of random numbers in [-0.5, 0.5] for m = %d runs...\n', m);
+fprintf('Mean of uniform random numbers with mean = %d and variance = %d for m = %d runs...\n',...
+    mean_input, variance_input, m);
 fprintf('Mean = %.4f\n', mean_data_mean);
 fprintf('sigma_X = %.4f\n', std_data_mean);
 
