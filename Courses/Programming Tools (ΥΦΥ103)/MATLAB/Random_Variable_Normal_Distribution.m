@@ -12,7 +12,8 @@ experiment_data = normrnd(mean_input,sigma_input,[m,1]); % Create data in form o
 
 figure;
 plot(experiment_data,'.');
-title(sprintf('Random numbers in [-0.5, 0.5] for m = %d runs', m));
+title(sprintf('Uniform random numbers with mean = %d\n and variance = %d for m = %d runs',...
+    mean_input, variance_input, m));
 yline(0);
 ylabel('Experiment Value');
 xlabel('Experiment number');
@@ -42,7 +43,8 @@ experiment_data_mean = normrnd(mean_input,sigma_input,m);
 mean_experiment = sum(experiment_data_mean)/m;
 figure;
 plot(mean_experiment,'.r');
-title(sprintf('Mean of random numbers in [-0.5, 0.5] for m = %d runs', m));
+title(sprintf('Mean of uniform random numbers with mean = %d\n and variance = %d for m = %d runs',...
+    mean_input, variance_input, m));
 ylabel('Experiment Value');
 xlabel('Experiment number');
 grid on;
@@ -62,7 +64,7 @@ plot(experiment_data,'.');
 plot(mean_experiment,'.');
 yline(0);
 title(sprintf('Experimental results for m = %d runs', m));
-legend('Random numbers in [-0.5, 0.5]', 'Mean of random numbers in [-0.5, 0.5]');
+legend('Uniform random numbers', 'Mean of uniform random numbers');
 ylabel('Experiment Value');
 xlabel('Experiment number');
 grid on;
