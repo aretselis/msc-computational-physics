@@ -1,3 +1,6 @@
+% Programming Tools (ΥΦΥ103)
+% Solution for MonteCarlo exam
+% Implemented by Anastasios-Faidon Retselis
 clear; clc; close all;
 
 n = 10000;
