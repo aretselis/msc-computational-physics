@@ -4,12 +4,15 @@
 clear; clc; close all;
 
 m = 1000;
+mean_input = 0;
+variance_input = 1;
+sigma_input = sqrt(variance_input);
 
-experiment_data = rand(m,1) - 0.5; % Create data in form of vector
+experiment_data = normrnd(mean_input,sigma_input,[m,1]); % Create data in form of vector
 
 figure;
 plot(experiment_data,'.');
-title(sprintf('Experiment results for m = %d runs', m));
+title(sprintf('Random numbers in [-0.5, 0.5] for m = %d runs', m));
 yline(0);
 ylabel('Experiment Value');
 xlabel('Experiment number');
@@ -29,22 +32,37 @@ mean_builtin = mean(experiment_data); % Mean based on built-in function
 sigma_x_formula = sqrt(sum((experiment_data-mean_formula).^2)/(m-1)); % std based on formula
 sigma_x_builtin = std(experiment_data); % std based on built-in function
 
+% Print results
+fprintf('Random numbers in [-0.5, 0.5] for m = %d runs...\n', m);
+fprintf('Mean = %.4f\n', mean_builtin);
+fprintf('sigma_x = %.4f\n\n', sigma_x_builtin);
+
 % Mean value based on experiment
-experiment_data_mean = rand(m) - 0.5;
+experiment_data_mean = normrnd(mean_input,sigma_input,m);
 mean_experiment = sum(experiment_data_mean)/m;
 figure;
 plot(mean_experiment,'.r');
+title(sprintf('Mean of random numbers in [-0.5, 0.5] for m = %d runs', m));
+ylabel('Experiment Value');
+xlabel('Experiment number');
 grid on;
 
 % Mean and standard deviation of this variable
-mean_data_mean = mean(experiment_data_mean);
-std_data_mean = std(experiment_data_mean);
+mean_data_mean = mean(mean_experiment);
+std_data_mean = std(mean_experiment,0,2);
+
+% Print results
+fprintf('Mean of random numbers in [-0.5, 0.5] for m = %d runs...\n', m);
+fprintf('Mean = %.4f\n', mean_data_mean);
+fprintf('sigma_X = %.4f\n', std_data_mean);
 
 figure;
 hold on;
 plot(experiment_data,'.');
 plot(mean_experiment,'.');
 yline(0);
+title(sprintf('Experimental results for m = %d runs', m));
+legend('Random numbers in [-0.5, 0.5]', 'Mean of random numbers in [-0.5, 0.5]');
 ylabel('Experiment Value');
 xlabel('Experiment number');
 grid on;
