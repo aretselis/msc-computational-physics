@@ -12,7 +12,7 @@ experiment_data = normrnd(mean_input,sigma_input,[m,1]); % Create data in form o
 
 figure;
 plot(experiment_data,'.');
-title(sprintf('Uniform random numbers with mean = %d\n and variance = %d for m = %d runs',...
+title(sprintf('Normally distributed random numbers with mean = %d\n and variance = %d for m = %d runs',...
     mean_input, variance_input, m));
 yline(0);
 ylabel('Experiment Value');
@@ -34,7 +34,7 @@ sigma_x_formula = sqrt(sum((experiment_data-mean_formula).^2)/(m-1)); % std base
 sigma_x_builtin = std(experiment_data); % std based on built-in function
 
 % Print results
-fprintf('Uniform random numbers with mean = %d and variance = %d for m = %d runs...\n',...
+fprintf('Normally distributed random numbers with mean = %d and variance = %d for m = %d runs...\n',...
     mean_input, variance_input, m);
 fprintf('Mean = %.4f\n', mean_builtin);
 fprintf('sigma_x = %.4f\n\n', sigma_x_builtin);
@@ -44,7 +44,7 @@ experiment_data_mean = normrnd(mean_input,sigma_input,m);
 mean_experiment = sum(experiment_data_mean)/m;
 figure;
 plot(mean_experiment,'.r');
-title(sprintf('Mean of uniform random numbers with mean = %d\n and variance = %d for m = %d runs',...
+title(sprintf('Mean of normally distributed random numbers with mean = %d\n and variance = %d for m = %d runs',...
     mean_input, variance_input, m));
 ylabel('Experiment Value');
 xlabel('Experiment number');
@@ -55,7 +55,7 @@ mean_data_mean = mean(mean_experiment);
 std_data_mean = std(mean_experiment,0,2);
 
 % Print results
-fprintf('Mean of uniform random numbers with mean = %d and variance = %d for m = %d runs...\n',...
+fprintf('Mean of normally distributed random numbers with mean = %d and variance = %d for m = %d runs...\n',...
     mean_input, variance_input, m);
 fprintf('Mean = %.4f\n', mean_data_mean);
 fprintf('sigma_X = %.4f\n', std_data_mean);
@@ -66,7 +66,7 @@ plot(experiment_data,'.');
 plot(mean_experiment,'.');
 yline(0);
 title(sprintf('Experimental results for m = %d runs', m));
-legend('Uniform random numbers', 'Mean of uniform random numbers');
+legend('Normally distributed random numbers', 'Mean of normally distributed random numbers');
 ylabel('Experiment Value');
 xlabel('Experiment number');
 grid on;
