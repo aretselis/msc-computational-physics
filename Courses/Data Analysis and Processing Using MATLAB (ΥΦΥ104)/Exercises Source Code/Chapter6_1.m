@@ -29,6 +29,8 @@ title('Autocorrelation Function')
 ylabel('Autocorrelation, r_{τ}');
 xlabel('Lag, τ');
 yline(0);
+yline(-2/sqrt(N),'b');
+yline(2/sqrt(N),'b');
 grid on;
 
 % Based on time series plot, assume a period of 11 years.
@@ -52,7 +54,6 @@ xlabel('Year, t');
 grid on;
 
 % Compute autocorrelation and plot
-autocorr(sunspots_mp);
 rho_data_mp = autocorrelation(sunspots_mp,20);
 figure;
 plot(rho_data_mp(:,1),'r.');
@@ -60,10 +61,12 @@ hold on;
 for i=1:length(rho_data_mp)
     plot([i i], [0, rho_data_mp(i)], 'r-'); 
 end
-title('Autocorrelation Function')
+title('Autocorrelation Function (minus periodic component)')
 ylabel('Autocorrelation, r_{τ}');
 xlabel('Lag, τ');
 yline(0);
+yline(-2/sqrt(N),'b');
+yline(2/sqrt(N),'b');
 grid on;
 
 
