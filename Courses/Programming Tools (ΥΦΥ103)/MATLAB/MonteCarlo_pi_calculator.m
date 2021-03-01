@@ -3,7 +3,7 @@
 % Implemented by Anastasios-Faidon Retselis
 clear; clc; close all;
 
-n = 1000000;
+n = 100000000;
 radius = 1;
 max = radius;
 min = -radius;
