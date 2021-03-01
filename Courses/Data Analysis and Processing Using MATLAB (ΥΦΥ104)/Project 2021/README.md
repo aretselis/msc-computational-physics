@@ -19,6 +19,11 @@ These data originate from the [European Center for Disease Control (ECDC)](https
 
 In exercise 1, the student has to pick one European country based on their registry number (AEM). For me, the corresponding country was Croatia. Students then have to read the data for the COVID-19 cases and deaths and then select five different parametric distributions and figure out which one is the best to explain the data based on chi-square goodness-of-fit tests or mean-squared error (due to low p-values returned from the chi-square test). This analysis is conducted independently for COVID-19 cases and deaths. Actual results are provided by running `Exe1_best_parametric_fit.m` and visual results are provided as a quick reference below:
 
+COVID-19 cases:
+![Comparison between distributions for COVID-19 cases](img/croatia_cases_distribution.png)
+
+COVID-19 deaths:
+![Comparison between distributions for COVID-19 deaths](img/croatia_deaths_distribution.png)
 
 ### Required files
 
@@ -60,6 +65,12 @@ In Exercise 3, the lag time between COVID-19 cases and deaths is investigated. F
 ### Overview
 
 In Exercise 4, the lag time between COVID-19 cases and deaths is investigated again but now using a different approach. If COVID-19 cases are represented as x(t) and COVID-19 deaths are represented y(t) and we assume that the peak date for deaths comes at a later date (after lag time τ), we can investigate a range of values for τ and figure out for which value τ the Pearson correlation coefficient ρ is maximized for x(t) and y(t+τ). The value τ which results in the highest Pearson correlation coefficient is then the lag time. This analysis is repeated for 6 countries and the results are compared with the ones from Exercise 3. For visual reference, two diagrams for France and Finland are provided:
+
+Finland:
+![τ which maximizes Pearson corrcoef for Finland](img/finland_max_pearson.png)
+
+France:
+![τ which maximizes Pearson corrcoef for France](img/france_max_pearson.png)
 
 ### Required files
 
