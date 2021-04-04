@@ -39,12 +39,9 @@ print('Time of Flight = %.2f seconds' % TOF)
 
 # Exercise 4
 
-planet_rotation = 360*TOF/86164
-print(planet_rotation)
 lon_greece = 23.7275
-desired_longitude = 23.7275 - (90+(90-planet_rotation))
-print('Start longitude = %.4f degrees' % desired_longitude)
-
 theta = np.pi*(1-((1/(2*np.sqrt(2)))*np.sqrt(1+pow((R1/R2), 3))))
-print(np.degrees(theta))
-print(planet_rotation + np.degrees(theta))
+desired_longitude = lon_greece - np.rad2deg(theta)
+print('Start longitude = %.3f degrees' % desired_longitude)
+
+
