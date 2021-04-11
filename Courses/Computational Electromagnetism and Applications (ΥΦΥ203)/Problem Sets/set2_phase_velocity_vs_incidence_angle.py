@@ -38,9 +38,25 @@ def k_hat_newton(theta, dx, dy, dt, l):
     return k
 
 
-# Case A: Delta_x = Delta_y = lambda/10
+# Case A: Delta_x = Delta_y = lambda/10, Delta_t = 0.9 C.L.
 lmbd = 1
 Delta_x = Delta_y = lmbd/10
+Delta_t = percent_stability_criterion(Delta_x, Delta_y, 0.9)
+
+vpc_values = np.zeros(90)
+
+for i in range(0, 90):
+    k = k_hat_newton(i, Delta_x, Delta_y, Delta_t, lmbd)
+    vpc_values[i] = 2*np.pi/(lmbd*k)
+
+plt.plot(vpc_values)
+plt.grid()
+plt.show()
+
+# Case B: Delta_x = lambda/10, Delta_y = lambda/20, Delta_t = 0.9 C.L.
+lmbd = 1
+Delta_x = lmbd/10
+Delta_y = lmbd/20
 Delta_t = percent_stability_criterion(Delta_x, Delta_y, 0.9)
 
 vpc_values = np.zeros(90)
