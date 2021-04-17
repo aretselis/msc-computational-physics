@@ -29,7 +29,7 @@ ir=15;                  %location of field recording
 jr=15;                  %location of field recording
 
 dx=0.01;                %space increment of square lattice
-dt=0.99*dx/(2.0*cc);    %time step
+dt=0.99*dx/(sqrt(2.0)*cc);    %time step
 
 nmax=10000;              %total number of time steps
 
@@ -135,9 +135,11 @@ ey(2:ie,:)=caey(2:ie,:).*ey(2:ie,:)+...
            cbey(2:ie,:).*(hz(1:ie-1,:)-hz(2:ie,:));
            
 %%% put one line here for the source, which extends in j = 2:je;
+%ex(is,2:je) = ex(is,2:je) + source(n)/dx;
+ey(is,2:je) = ey(is,2:je) + source(n)/dx;
 
 %%% put one line here to record the field 
-
+field_recording(n) = ey(ir,jr);
 
 %***********************************************************************
 %     Update EX and EY at PEC boundaries
@@ -157,35 +159,45 @@ hz(1:ie,1:je)=dahz(1:ie,1:je).*hz(1:ie,1:je)+...
 %     Visualize fields
 %***********************************************************************
 
-if mod(n,250)==0; %visualize every 250 time steps
-
-timestep=int2str(n);
-
-subplot(1,3,1),pcolor(ex'); drawnow;
-shading flat;
-axis([1 ie 1 jb]);
-axis image;
-axis off;
-title(['Ex at time step = ',timestep]);
-
-subplot(1,3,2),pcolor(ey'); drawnow;
-shading flat;
-axis([1 ib 1 je]);
-axis image;
-axis off;
-title(['Ey at time step = ',timestep]);
-
-subplot(1,3,3),pcolor(hz'); drawnow;
-shading flat;
-axis([1 ie 1 je]);
-axis image;
-axis off;
-title(['Hz at time step = ',timestep]);
-
-end;
+% if mod(n,250)==0; %visualize every 250 time steps
+% 
+% timestep=int2str(n);
+% 
+% subplot(1,3,1),pcolor(ex'); drawnow;
+% shading flat;
+% axis([1 ie 1 jb]);
+% axis image;
+% axis off;
+% title(['Ex at time step = ',timestep]);
+% 
+% subplot(1,3,2),pcolor(ey'); drawnow;
+% shading flat;
+% axis([1 ib 1 je]);
+% axis image;
+% axis off;
+% title(['Ey at time step = ',timestep]);
+% 
+% subplot(1,3,3),pcolor(hz'); drawnow;
+% shading flat;
+% axis([1 ie 1 je]);
+% axis image;
+% axis off;
+% title(['Hz at time step = ',timestep]);
+% 
+% end;
 
 %***********************************************************************
 %     END TIME-STEPPING LOOP
 %***********************************************************************
 
 end
+
+Y = fft(field_recording);
+L = nmax;
+P2 = abs(Y/L);
+P1 = P2(1:L/2+1);
+P1(2:end-1) = 2*P1(2:end-1);
+f = (1/dt)*(0:(L/2))/L;
+figure;
+plot(f, P1);
+xlim([0,1*10e8])
