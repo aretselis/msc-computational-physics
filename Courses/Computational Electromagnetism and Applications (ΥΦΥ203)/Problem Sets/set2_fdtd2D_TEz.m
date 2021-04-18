@@ -29,6 +29,7 @@ ir=15;                  %location of field recording
 jr=15;                  %location of field recording
 
 dx=0.01;                %space increment of square lattice
+dy=0.01;
 dt=0.99*dx/(sqrt(2.0)*cc);    %time step
 
 nmax=10000;              %total number of time steps
