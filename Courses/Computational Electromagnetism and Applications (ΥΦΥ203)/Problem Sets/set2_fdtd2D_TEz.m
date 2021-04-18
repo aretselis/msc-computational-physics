@@ -134,18 +134,9 @@ ex(:,2:je)=caex(:,2:je).*ex(:,2:je)+...
 ey(2:ie,:)=caey(2:ie,:).*ey(2:ie,:)+...
            cbey(2:ie,:).*(hz(1:ie-1,:)-hz(2:ie,:));
            
-%%% put one line here for the source, which extends in j = 2:je;
-%ex(is,2:je) = ex(is,2:je) + source(n)/dx;
-ey(is,2:je) = ey(is,2:je) + source(n)/dx;
+ey(is,2:je) = ey(is,2:je) + source(n)/dy;
 
-%%% put one line here to record the field 
 field_recording(n) = ey(ir,jr);
-
-%***********************************************************************
-%     Update EX and EY at PEC boundaries
-%***********************************************************************
-
-%%% put four lines here for the boundary conditions for PEC walls
 
 %***********************************************************************
 %     Update magnetic fields (HZ) in main grid
