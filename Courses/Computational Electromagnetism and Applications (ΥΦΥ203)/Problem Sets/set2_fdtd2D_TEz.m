@@ -205,3 +205,4 @@ xlim([0,1*10e8]);
 xlabel('Frequency, f, [Hz]');
 title({'Fourier Spectrum of Sampled Electric Field in',...
     'PEC Bound Cavity Excited by TEz wave + Source'});
+grid on;
