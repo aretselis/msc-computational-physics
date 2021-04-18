@@ -16,3 +16,8 @@ Omega = 0
 omega = 0
 M = 0
 
+# Initial conditions t=0
+
+a = R_earth + H
+v = np.sqrt(mu_earth/a)
+
