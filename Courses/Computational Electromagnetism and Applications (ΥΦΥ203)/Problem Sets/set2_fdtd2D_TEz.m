@@ -102,7 +102,7 @@ dbhz(1:ie,1:je)=db(1);
 % rad=diam/2.0;     % radius of cylinder
 % icenter=4*ie/5;   % i-coordinate of cylinder's center
 % jcenter=je/2;     % j-coordinate of cylinder's center
-
+% 
 % for i=1:ie
 % for j=1:je
 %   dist2=(i+0.5-icenter)^2 + (j-jcenter)^2;
@@ -193,11 +193,15 @@ hz(1:ie,1:je)=dahz(1:ie,1:je).*hz(1:ie,1:je)+...
 end
 
 Y = fft(field_recording);
+Fs = 1/dt;
 L = nmax;
 P2 = abs(Y/L);
 P1 = P2(1:L/2+1);
 P1(2:end-1) = 2*P1(2:end-1);
-f = (1/dt)*(0:(L/2))/L;
+f = Fs*(0:(L/2))/L;
 figure;
 plot(f, P1);
-xlim([0,1*10e8])
+xlim([0,1*10e8]);
+xlabel('Frequency, f, [Hz]');
+title({'Fourier Spectrum of Sampled Electric Field in',...
+    'PEC Bound Cavity Excited by TEz wave + Source'});
