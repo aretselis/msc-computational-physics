@@ -85,7 +85,7 @@ def runge_kutta_4(x_0, y_0, z_0, vx_0, vy_0, vz_0, mu, C_t, S, M_sc, t_start, tm
     # h, integration step size [seconds]
     # Output is 7 vectors containing position, velocity and time information at each integration step
 
-    min_propagation_altitude = 120000
+    min_propagation_altitude = 100000
     # Log initial values
     tn = [t_start]
     xn = [x_0]
@@ -101,9 +101,10 @@ def runge_kutta_4(x_0, y_0, z_0, vx_0, vy_0, vz_0, mu, C_t, S, M_sc, t_start, tm
         k1_x = fx(vx_0)
         k1_y = fy(vy_0)
         k1_z = fz(vz_0)
-        k1_vx = fv_x(x_0, y_0, z_0, mu, vx_0, vy_0, vz_0, C_t, S, M_sc)
-        k1_vy = fv_y(x_0, y_0, z_0, mu, vx_0, vy_0, vz_0, C_t, S, M_sc)
-        k1_vz = fv_z(x_0, y_0, z_0, mu, vx_0, vy_0, vz_0, C_t, S, M_sc)
+        vx_rel, vy_rel, vz_rel = relative_velocity(x_0, y_0, z_0, vx_0, vy_0, vz_0)
+        k1_vx = fv_x(x_0, y_0, z_0, mu, vx_rel, vy_rel, vz_rel, C_t, S, M_sc)
+        k1_vy = fv_y(x_0, y_0, z_0, mu, vx_rel, vy_rel, vz_rel, C_t, S, M_sc)
+        k1_vz = fv_z(x_0, y_0, z_0, mu, vx_rel, vy_rel, vz_rel, C_t, S, M_sc)
         # Calculate midpoint values
         mid_x = x_0 + k1_x * h / 2
         mid_y = y_0 + k1_y * h / 2
@@ -111,13 +112,14 @@ def runge_kutta_4(x_0, y_0, z_0, vx_0, vy_0, vz_0, mu, C_t, S, M_sc, t_start, tm
         mid_vx = vx_0 + k1_vx * h / 2
         mid_vy = vy_0 + k1_vy * h / 2
         mid_vz = vz_0 + k1_vz * h / 2
+        vx_rel, vy_rel, vz_rel = relative_velocity(mid_x, mid_y, mid_z, mid_vx, mid_vy, mid_vz)
         # Calculate k2 values
         k2_x = fx(mid_vx)
         k2_y = fy(mid_vy)
         k2_z = fz(mid_vz)
-        k2_vx = fv_x(mid_x, mid_y, mid_z, mu, mid_vx, mid_vy, mid_vz, C_t, S, M_sc)
-        k2_vy = fv_y(mid_x, mid_y, mid_z, mu, mid_vx, mid_vy, mid_vz, C_t, S, M_sc)
-        k2_vz = fv_z(mid_x, mid_y, mid_z, mu, mid_vx, mid_vy, mid_vz, C_t, S, M_sc)
+        k2_vx = fv_x(mid_x, mid_y, mid_z, mu, vx_rel, vy_rel, vz_rel, C_t, S, M_sc)
+        k2_vy = fv_y(mid_x, mid_y, mid_z, mu, vx_rel, vy_rel, vz_rel, C_t, S, M_sc)
+        k2_vz = fv_z(mid_x, mid_y, mid_z, mu, vx_rel, vy_rel, vz_rel, C_t, S, M_sc)
         # Calculate next midpoint values
         mid_x = x_0 + k2_x * h / 2
         mid_y = y_0 + k2_y * h / 2
@@ -125,13 +127,14 @@ def runge_kutta_4(x_0, y_0, z_0, vx_0, vy_0, vz_0, mu, C_t, S, M_sc, t_start, tm
         mid_vx = vx_0 + k2_vx * h / 2
         mid_vy = vy_0 + k2_vy * h / 2
         mid_vz = vz_0 + k2_vz * h / 2
+        vx_rel, vy_rel, vz_rel = relative_velocity(mid_x, mid_y, mid_z, mid_vx, mid_vy, mid_vz)
         # Calculate k3 values
         k3_x = fx(mid_vx)
         k3_y = fy(mid_vy)
         k3_z = fz(mid_vz)
-        k3_vx = fv_x(mid_x, mid_y, mid_z, mu, mid_vx, mid_vy, mid_vz, C_t, S, M_sc)
-        k3_vy = fv_y(mid_x, mid_y, mid_z, mu, mid_vx, mid_vy, mid_vz, C_t, S, M_sc)
-        k3_vz = fv_z(mid_x, mid_y, mid_z, mu, mid_vx, mid_vy, mid_vz, C_t, S, M_sc)
+        k3_vx = fv_x(mid_x, mid_y, mid_z, mu, vx_rel, vy_rel, vz_rel, C_t, S, M_sc)
+        k3_vy = fv_y(mid_x, mid_y, mid_z, mu, vx_rel, vy_rel, vz_rel, C_t, S, M_sc)
+        k3_vz = fv_z(mid_x, mid_y, mid_z, mu, vx_rel, vy_rel, vz_rel, C_t, S, M_sc)
         # Calculate next midpoint values
         mid_x = x_0 + k3_x * h
         mid_y = y_0 + k3_y * h
@@ -139,13 +142,14 @@ def runge_kutta_4(x_0, y_0, z_0, vx_0, vy_0, vz_0, mu, C_t, S, M_sc, t_start, tm
         mid_vx = vx_0 + k3_vx * h
         mid_vy = vy_0 + k3_vy * h
         mid_vz = vz_0 + k3_vz * h
+        vx_rel, vy_rel, vz_rel = relative_velocity(mid_x, mid_y, mid_z, mid_vx, mid_vy, mid_vz)
         # Calculate k4 values
         k4_x = fx(mid_vx)
         k4_y = fy(mid_vy)
         k4_z = fz(mid_vz)
-        k4_vx = fv_x(mid_x, mid_y, mid_z, mu, mid_vx, mid_vy, mid_vz, C_t, S, M_sc)
-        k4_vy = fv_y(mid_x, mid_y, mid_z, mu, mid_vx, mid_vy, mid_vz, C_t, S, M_sc)
-        k4_vz = fv_z(mid_x, mid_y, mid_z, mu, mid_vx, mid_vy, mid_vz, C_t, S, M_sc)
+        k4_vx = fv_x(mid_x, mid_y, mid_z, mu, vx_rel, vy_rel, vz_rel, C_t, S, M_sc)
+        k4_vy = fv_y(mid_x, mid_y, mid_z, mu, vx_rel, vy_rel, vz_rel, C_t, S, M_sc)
+        k4_vz = fv_z(mid_x, mid_y, mid_z, mu, vx_rel, vy_rel, vz_rel, C_t, S, M_sc)
         # Compute r, v values and append to list
         xn.append(xn[counter] + (h / 6) * (k1_x + 2 * k2_x + 2 * k3_x + k4_x))
         yn.append(yn[counter] + (h / 6) * (k1_y + 2 * k2_y + 2 * k3_y + k4_y))
@@ -269,17 +273,39 @@ xn, yn, zn, vxn, vyn, vzn, tn = \
 
 # Compute r magnitude
 r = np.zeros(np.size(xn))
+h = np.zeros(np.size(xn))
 for i in range(0, np.size(xn)):
     r[i] = np.sqrt(pow(xn[i], 2) + pow(yn[i], 2) + pow(zn[i], 2))
+    h[i] = r[i] - R_earth
 
-# Plot results for one orbit
-#plt.plot(tn, xn, label='x-coordinate')
-#plt.plot(tn, yn, label='y-coordinate')
-#plt.plot(tn, zn, label='z-coordinate')
-plt.plot(tn, r,  label='Orbit Radius')
+# Convert to xn, yn to km an
+r = np.divide(r, 1000)
+h = np.divide(h, 1000)
+xn = np.divide(xn, 1000)
+yn = np.divide(yn, 1000)
+
+# Plot radius vs time
+plt.figure()
+plt.plot(tn, h,  label='Altitude')
 plt.xlabel('Time, t, [seconds]')
-plt.ylabel('Orbit Radius, r, [meters]')
-plt.title('Integration of equations of motion for a satellite at\n 400 km altitude')
+plt.ylabel('Altitude above Earth, h, [km]')
+plt.title('Orbital Decay Diagram for a satellite similar to the ISS')
 plt.grid()
+plt.legend()
+
+# Plot orbit on XY-plane
+plt.figure()
+# Plot the earth
+radius = R_earth/1000
+theta = np.linspace(0, 2*np.pi, 1000)
+x_earth = radius*np.cos(theta)
+y_earth = radius*np.sin(theta)
+plt.plot(x_earth, y_earth, label='Earth')
+# Plot the orbit
+plt.plot(xn, yn, label='Orbit')
+plt.xlabel('x-coordinate [km]')
+plt.ylabel('y-coordinate [km]')
+plt.grid()
+plt.axis('scaled')
 plt.legend()
 plt.show()
