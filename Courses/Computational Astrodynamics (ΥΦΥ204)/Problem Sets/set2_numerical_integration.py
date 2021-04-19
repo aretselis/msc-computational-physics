@@ -198,6 +198,8 @@ e = 0
 Omega = 0
 omega = 0
 M = 0
+T = 2 * np.pi * np.sqrt(pow(a, 3)/mu_earth)
+print(T)
 
 # Initial conditions t=0
 r_vector, v_vector = orbital_elements_to_cartesian(a, e, i, Omega, omega, M, mu_earth)
@@ -207,7 +209,7 @@ z = r_vector[2]
 vx = v_vector[0]
 vy = v_vector[1]
 vz = v_vector[2]
-xn, yn, zn, vxn, vyn, vzn = runge_kutta_4(x, y, z, vx, vy, vz, mu_earth, 0, 3600, 0.1)
+xn, yn, zn, vxn, vyn, vzn = runge_kutta_4(x, y, z, vx, vy, vz, mu_earth, 0, T, 0.1)
 
 r = np.zeros(np.size(xn))
 x = np.zeros(np.size(zn))
