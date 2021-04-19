@@ -122,12 +122,12 @@ def runge_kutta_4(x_0, y_0, z_0, vx_0, vy_0, vz_0, mu, tmin, tmax, h):
         k3_vy = fv_y(mid_x, mid_y, mid_z, mu)
         k3_vz = fv_z(mid_x, mid_y, mid_z, mu)
         # Calculate next midpoint values
-        mid_x = x_0 + k3_x * h / 2
-        mid_y = y_0 + k3_y * h / 2
-        mid_z = z_0 + k3_z * h / 2
-        mid_vx = vx_0 + k3_vx * h / 2
-        mid_vy = vy_0 + k3_vy * h / 2
-        mid_vz = vz_0 + k3_vz * h / 2
+        mid_x = x_0 + k3_x * h
+        mid_y = y_0 + k3_y * h
+        mid_z = z_0 + k3_z * h
+        mid_vx = vx_0 + k3_vx * h
+        mid_vy = vy_0 + k3_vy * h
+        mid_vz = vz_0 + k3_vz * h
         # Calculate k4 values
         k4_x = fx(mid_vx)
         k4_y = fy(mid_vy)
@@ -209,7 +209,7 @@ z = r_vector[2]
 vx = v_vector[0]
 vy = v_vector[1]
 vz = v_vector[2]
-xn, yn, zn, vxn, vyn, vzn = runge_kutta_4(x, y, z, vx, vy, vz, mu_earth, 0, 10*T, 25)
+xn, yn, zn, vxn, vyn, vzn = runge_kutta_4(x, y, z, vx, vy, vz, mu_earth, 0, 6000*T, 60)
 
 r = np.zeros(np.size(xn))
 x = np.zeros(np.size(zn))
