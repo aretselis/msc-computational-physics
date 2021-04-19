@@ -101,12 +101,12 @@ def runge_kutta_4(x_0, y_0, z_0, vx_0, vy_0, vz_0, mu, tmin, tmax, h):
         mid_vy = vy_0 + k1_vy * h/2
         mid_vz = vz_0 + k1_vz * h/2
         # Calculate k2 values
-        k2_x = h * fx(mid_vx)
-        k2_y = h * fy(mid_vy)
-        k2_z = h * fz(mid_vz)
-        k2_vx = h * fv_x(mid_x, mid_y, mid_z, mu)
-        k2_vy = h * fv_y(mid_x, mid_y, mid_z, mu)
-        k2_vz = h * fv_z(mid_x, mid_y, mid_z, mu)
+        k2_x = fx(mid_vx)
+        k2_y = fy(mid_vy)
+        k2_z = fz(mid_vz)
+        k2_vx = fv_x(mid_x, mid_y, mid_z, mu)
+        k2_vy = fv_y(mid_x, mid_y, mid_z, mu)
+        k2_vz = fv_z(mid_x, mid_y, mid_z, mu)
         # Calculate next midpoint values
         mid_x = x_0 + k2_x * h / 2
         mid_y = y_0 + k2_y * h / 2
@@ -115,12 +115,12 @@ def runge_kutta_4(x_0, y_0, z_0, vx_0, vy_0, vz_0, mu, tmin, tmax, h):
         mid_vy = vy_0 + k2_vy * h / 2
         mid_vz = vz_0 + k2_vz * h / 2
         # Calculate k3 values
-        k3_x = h * fx(mid_vx)
-        k3_y = h * fy(mid_vy)
-        k3_z = h * fz(mid_vz)
-        k3_vx = h * fv_x(mid_x, mid_y, mid_z, mu)
-        k3_vy = h * fv_y(mid_x, mid_y, mid_z, mu)
-        k3_vz = h * fv_z(mid_x, mid_y, mid_z, mu)
+        k3_x = fx(mid_vx)
+        k3_y = fy(mid_vy)
+        k3_z = fz(mid_vz)
+        k3_vx = fv_x(mid_x, mid_y, mid_z, mu)
+        k3_vy = fv_y(mid_x, mid_y, mid_z, mu)
+        k3_vz = fv_z(mid_x, mid_y, mid_z, mu)
         # Calculate next midpoint values
         mid_x = x_0 + k3_x * h / 2
         mid_y = y_0 + k3_y * h / 2
@@ -129,12 +129,12 @@ def runge_kutta_4(x_0, y_0, z_0, vx_0, vy_0, vz_0, mu, tmin, tmax, h):
         mid_vy = vy_0 + k3_vy * h / 2
         mid_vz = vz_0 + k3_vz * h / 2
         # Calculate k4 values
-        k4_x = h * fx(mid_vx)
-        k4_y = h * fy(mid_vy)
-        k4_z = h * fz(mid_vz)
-        k4_vx = h * fv_x(mid_x, mid_y, mid_z, mu)
-        k4_vy = h * fv_y(mid_x, mid_y, mid_z, mu)
-        k4_vz = h * fv_z(mid_x, mid_y, mid_z, mu)
+        k4_x = fx(mid_vx)
+        k4_y = fy(mid_vy)
+        k4_z = fz(mid_vz)
+        k4_vx = fv_x(mid_x, mid_y, mid_z, mu)
+        k4_vy = fv_y(mid_x, mid_y, mid_z, mu)
+        k4_vz = fv_z(mid_x, mid_y, mid_z, mu)
         # Compute r, v values and append to list
         xn.append(xn[counter] + (h / 6) * (k1_x + 2 * k2_x + 2 * k3_x + k4_x))
         yn.append(yn[counter] + (h / 6) * (k1_y + 2 * k2_y + 2 * k3_y + k4_y))
@@ -209,7 +209,7 @@ z = r_vector[2]
 vx = v_vector[0]
 vy = v_vector[1]
 vz = v_vector[2]
-xn, yn, zn, vxn, vyn, vzn = runge_kutta_4(x, y, z, vx, vy, vz, mu_earth, 0, T, 0.1)
+xn, yn, zn, vxn, vyn, vzn = runge_kutta_4(x, y, z, vx, vy, vz, mu_earth, 0, 10*T, 25)
 
 r = np.zeros(np.size(xn))
 x = np.zeros(np.size(zn))
