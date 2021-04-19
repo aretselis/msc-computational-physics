@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import time
+from mpl_toolkits.axes_grid1.inset_locator import zoomed_inset_axes
+from mpl_toolkits.axes_grid1.inset_locator import mark_inset
 
 
 def orbital_elements_to_cartesian(a, e, i, Omega, omega, M, mu):
@@ -294,18 +295,29 @@ plt.grid()
 plt.legend()
 
 # Plot orbit on XY-plane
-plt.figure()
 # Plot the earth
 radius = R_earth/1000
 theta = np.linspace(0, 2*np.pi, 1000)
 x_earth = radius*np.cos(theta)
 y_earth = radius*np.sin(theta)
-plt.plot(x_earth, y_earth, label='Earth')
 # Plot the orbit
-plt.plot(xn, yn, label='Orbit')
-plt.xlabel('x-coordinate [km]')
-plt.ylabel('y-coordinate [km]')
-plt.grid()
-plt.axis('scaled')
-plt.legend()
+fig, ax = plt.subplots()
+ax.plot(x_earth, y_earth, label='Earth Radius')
+ax.plot(xn, yn, label='Orbit')
+ax.grid()
+ax.set_xlabel('x-coordinate [km]')
+ax.set_ylabel('y-coordinate [km]')
+ax.set_title('Orbit view on XY-plane')
+ax.axis('scaled')
+# Create zoom-in window
+zoom1 = zoomed_inset_axes(ax, zoom = 5, loc=10)
+zoom1.plot(x_earth, y_earth)
+zoom1.plot(xn, yn)
+x1, x2, y1, y2 = 5500, 6800, 1200, 2200
+zoom1.set_xlim(x1, x2)
+zoom1.set_ylim(y1, y2)
+plt.xticks(visible=False)
+plt.yticks(visible=False)
+mark_inset(ax, zoom1, loc1=1, loc2=4, fc="none", ec="0.5")
+fig.legend()
 plt.show()
