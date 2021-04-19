@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
-
+import time
 
 def orbital_elements_to_cartesian(a, e, i, Omega, omega, M, mu):
     # Computes cartesian position and velocity vector given some orbital elements
@@ -70,14 +70,22 @@ def orbital_elements_to_cartesian(a, e, i, Omega, omega, M, mu):
     x_y_dot_vector = np.array([x_dot, y_dot, 0])
     r_vector = np.matmul(np.matmul(np.matmul(P3, P2), P1), x_y_vector)
     v_vector = np.matmul(np.matmul(np.matmul(P3, P2), P1), x_y_dot_vector)
-    return (r_vector, v_vector)
+    return r_vector, v_vector
 
 
-def runge_kutta_4(x_0, y_0, z_0, vx_0, vy_0, vz_0, mu, tmin, tmax, h):
-    # 4th order Runge Kutta implementation
-    # Input is initial condition (t0,y0), interval to compute [t_min,t_max] and step/distance h
-    # Output is 2 vectors containing t and y values (ready to be plotted)
-    tn = [tmin]
+def runge_kutta_4(x_0, y_0, z_0, vx_0, vy_0, vz_0, mu, t_start, tmax, h):
+    # 4th order Runge Kutta orbit propagator
+    # Input:
+    # x_0, y_0, z_0, namely the coordinates of the position vector [meters]
+    # vx_0, vy_0, vz_0, namely the coordinates of the velocity vector [m/s]
+    # mu, mu constant
+    # t_start, initial time [seconds]
+    # t_end, propagation end time [seconds]
+    # h, integration step size [seconds]
+    # Output is 7 vectors containing position, velocity and time information at each integration step
+
+    # Log initial values
+    tn = [t_start]
     xn = [x_0]
     yn = [y_0]
     zn = [z_0]
@@ -85,6 +93,7 @@ def runge_kutta_4(x_0, y_0, z_0, vx_0, vy_0, vz_0, mu, tmin, tmax, h):
     vyn = [vy_0]
     vzn = [vz_0]
     counter = 0
+    # Main RK4 loop
     while tn[counter] < tmax:
         # Calculate k1 values
         k1_x = fx(vx_0)
@@ -142,7 +151,7 @@ def runge_kutta_4(x_0, y_0, z_0, vx_0, vy_0, vz_0, mu, tmin, tmax, h):
         vxn.append(vxn[counter] + (h / 6) * (k1_vx + 2 * k2_vx + 2 * k3_vx + k4_vx))
         vyn.append(vyn[counter] + (h / 6) * (k1_vy + 2 * k2_vy + 2 * k3_vy + k4_vy))
         vzn.append(vzn[counter] + (h / 6) * (k1_vz + 2 * k2_vz + 2 * k3_vz + k4_vz))
-        # Compute next t and reset values
+        # Prepare for the next iteration and reset values
         counter += 1
         tn.append(tn[counter - 1] + h)
         x_0 = xn[counter]
@@ -151,7 +160,7 @@ def runge_kutta_4(x_0, y_0, z_0, vx_0, vy_0, vz_0, mu, tmin, tmax, h):
         vx_0 = vxn[counter]
         vy_0 = vyn[counter]
         vz_0 = vzn[counter]
-    return xn, yn, zn, vxn, vyn, vzn
+    return xn, yn, zn, vxn, vyn, vzn, tn
 
 
 def fx(v_x):
@@ -191,17 +200,16 @@ mu_earth = G*M_earth
 R_earth = 6371000  # [meters]
 
 # Orbit definition
-H = 400000  # [meters]
-a = R_earth + H
-i = 0
-e = 0
-Omega = 0
-omega = 0
-M = 0
-T = 2 * np.pi * np.sqrt(pow(a, 3)/mu_earth)
-print(T)
+H = 400000  # Altitude, [meters]
+a = R_earth + H  # Semi-major axis, [meters]
+i = 0  # Inclination, [deg]
+e = 0  # Eccentricity, []
+Omega = 0  # Longitude of the Ascending Note [deg]
+omega = 0  # Argument of pericenter [deg]
+M = 0  # Mean anomaly, [deg]
+T = 2 * np.pi * np.sqrt(pow(a, 3)/mu_earth)  # Orbital period, [seconds]
 
-# Initial conditions t=0
+# Compute initial position and velocity vector from orbital elements
 r_vector, v_vector = orbital_elements_to_cartesian(a, e, i, Omega, omega, M, mu_earth)
 x = r_vector[0]
 y = r_vector[1]
@@ -209,21 +217,49 @@ z = r_vector[2]
 vx = v_vector[0]
 vy = v_vector[1]
 vz = v_vector[2]
-xn, yn, zn, vxn, vyn, vzn = runge_kutta_4(x, y, z, vx, vy, vz, mu_earth, 0, 6000*T, 60)
 
+# Propagate orbit (all times in seconds)
+start_time = 0
+end_time = T
+time_step = 1
+xn, yn, zn, vxn, vyn, vzn, tn = runge_kutta_4(x, y, z, vx, vy, vz, mu_earth, start_time, end_time, time_step)
+
+# Compute r magnitude
 r = np.zeros(np.size(xn))
-x = np.zeros(np.size(zn))
-y = np.zeros(np.size(zn))
-z = np.zeros(np.size(zn))
 for i in range(0, np.size(xn)):
     r[i] = np.sqrt(pow(xn[i], 2) + pow(yn[i], 2) + pow(zn[i], 2))
-    x[i] = np.sqrt(pow(xn[i], 2))
-    y[i] = np.sqrt(pow(yn[i], 2))
-    z[i] = np.sqrt(pow(zn[i], 2))
 
-plt.plot(x)
-plt.plot(y)
-plt.plot(z)
-plt.plot(r)
+# Plot results for one orbit
+plt.plot(tn, xn, label='x-coordinate')
+plt.plot(tn, yn, label='y-coordinate')
+plt.plot(tn, zn, label='z-coordinate')
+plt.plot(tn, r,  label='Orbit Radius')
+plt.xlabel('Time, t, [seconds]')
+plt.ylabel('Value, [meters]')
+plt.title('Integration of equations of motion for a satellite at\n 400 km altitude')
 plt.grid()
+plt.legend()
 plt.show()
+
+# Validate propagator by computing error for different step sizes for 6000 orbits
+start_time = 0
+end_time = 6000*T
+time_steps = np.array([60, 50, 40, 30, 20])
+print('=======================================================')
+print('Propagator Validation for ' + str(end_time) + ' seconds')
+print('=======================================================')
+print('Time step (sec)\t\t% Error\t\tRun time (sec)')
+for counter in range(0, np.size(time_steps)):
+    timer_start = time.time()
+    xn, yn, zn, vxn, vyn, vzn, tn = \
+        runge_kutta_4(x, y, z, vx, vy, vz, mu_earth, start_time, end_time, time_steps[counter])
+    # Compute r magnitude
+    r = np.zeros(np.size(xn))
+    for i in range(0, np.size(xn)):
+        r[i] = np.sqrt(pow(xn[i], 2) + pow(yn[i], 2) + pow(zn[i], 2))
+    # Compute error
+    r_initial = r[0]
+    r_final = r[np.size(xn)-1]
+    error = np.fabs(r_final-r_initial)/r_initial*100
+    time_taken = time.time() - timer_start
+    print('%d\t\t\t\t\t%.5f\t\t%.2f' % (time_steps[counter], error, time_taken))
