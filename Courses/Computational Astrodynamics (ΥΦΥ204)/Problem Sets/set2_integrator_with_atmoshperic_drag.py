@@ -188,7 +188,9 @@ def runge_kutta_4(x_0, y_0, z_0, vx_0, vy_0, vz_0, mu, C_t, S, M_sc, t_start, t_
     return xn, yn, zn, vxn, vyn, vzn, tn
 
 
-def gauss_integrator(a_0, mu, c_t, S, m_s,  t_start, t_end, h):
+def gauss_integrator(a_0, mu, c_t, S, m_s, t_start, t_end, h):
+    # Propagates the orbit's semimajor axis using Gauss' equation
+    # Input:
     min_propagation_altitude = 120000
     R_earth = 6371000
     tn = [t_start]
@@ -213,6 +215,7 @@ def gauss_integrator(a_0, mu, c_t, S, m_s,  t_start, t_end, h):
 
 
 def fa(a, mu, c_t, S, m_s):
+    # Assuming a'(t)=-rho*sqrt(mu*a)*Ct*S/m_s
     rho = atmospheric_density(a)
     return -rho*np.sqrt(mu*a)*c_t*S/m_s
 
@@ -386,6 +389,16 @@ mark_inset(ax, zoom1, loc1=1, loc2=4, fc="none", ec="0.5")
 fig.legend()
 plt.show()
 
-print('For non-relative case, using equation of motion, satellite decays after %.3f' % tn[np.size(tn)-1])
-print('For relative case, using equation of motion, satellite decays after %.3f' % tn_rel[np.size(tn_rel)-1])
-print('Using Gauss equation, satellite decays after %.3f' % t_vector[np.size(t_vector)-1])
+time_taken_non_relative = tn[np.size(tn)-1]
+time_taken_relative = tn_rel[np.size(tn_rel)-1]
+time_taken_gauss = t_vector[np.size(t_vector)-1]
+orbits_taken_non_relative = tn[np.size(tn)-1]/T
+orbits_taken_relative = tn_rel[np.size(tn_rel)-1]/T
+orbits_taken_gauss = t_vector[np.size(t_vector)-1]/T
+print("For non-relative case, using equation of motion, satellite decays after %.2f seconds (or after %.2f orbits)"
+      % (time_taken_non_relative, orbits_taken_non_relative))
+print("For relative case, using equation of motion, satellite decays after %.2f seconds (or after %.2f orbits)"
+      % (time_taken_relative, orbits_taken_relative))
+print("Using Gauss equation, satellite decays after %.2f seconds (or after %.2f orbits)"
+      % (time_taken_gauss, orbits_taken_gauss))
+
