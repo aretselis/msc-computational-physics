@@ -75,7 +75,7 @@ def orbital_elements_to_cartesian(a, e, i, Omega, omega, M, mu):
     return r_vector, v_vector
 
 
-def runge_kutta_4(x_0, y_0, z_0, vx_0, vy_0, vz_0, mu, C_t, S, M_sc, t_start, tmax, h):
+def runge_kutta_4(x_0, y_0, z_0, vx_0, vy_0, vz_0, mu, C_t, S, M_sc, t_start, t_end, h):
     # 4th order Runge Kutta orbit propagator
     # Input:
     # x_0, y_0, z_0, namely the coordinates of the position vector [meters]
@@ -87,6 +87,7 @@ def runge_kutta_4(x_0, y_0, z_0, vx_0, vy_0, vz_0, mu, C_t, S, M_sc, t_start, tm
     # Output is 7 vectors containing position, velocity and time information at each integration step
 
     min_propagation_altitude = 100000
+    R_earth = 6371000
     # Log initial values
     tn = [t_start]
     xn = [x_0]
@@ -97,7 +98,7 @@ def runge_kutta_4(x_0, y_0, z_0, vx_0, vy_0, vz_0, mu, C_t, S, M_sc, t_start, tm
     vzn = [vz_0]
     counter = 0
     # Main RK4 loop
-    while tn[counter] < tmax:
+    while tn[counter] < t_end:
         # Calculate k1 values
         k1_x = fx(vx_0)
         k1_y = fy(vy_0)
@@ -172,6 +173,35 @@ def runge_kutta_4(x_0, y_0, z_0, vx_0, vy_0, vz_0, mu, C_t, S, M_sc, t_start, tm
             print('Minimum altitude reached, leading to rapid decay of the orbit. Exiting propagation...')
             break
     return xn, yn, zn, vxn, vyn, vzn, tn
+
+
+def gauss_integrator(a_0, mu, c_t, S, m_s,  t_start, t_end, h):
+    min_propagation_altitude = 120000
+    R_earth = 6371000
+    tn = [t_start]
+    an = [a_0]
+    counter = 0
+    while tn[counter] < t_end:
+        k1_a = fa(a_0, mu, c_t, S, m_s)
+        mid_a = a_0 + k1_a * h / 2
+        k2_a = fa(mid_a, mu, c_t, S, m_s)
+        mid_a = a_0 + k2_a * h / 2
+        k3_a = fa(mid_a, mu, c_t, S, m_s)
+        mid_a = a_0 + k3_a * h
+        k4_a = fa(mid_a, mu, c_t, S, m_s)
+        an.append(an[counter] + (h / 6) * (k1_a + 2 * k2_a + 2 * k3_a + k4_a))
+        counter += 1
+        tn.append(tn[counter - 1] + h)
+        a_0 = an[counter]
+        if a_0 < R_earth + min_propagation_altitude:
+            print('Minimum altitude reached, leading to rapid decay of the orbit. Exiting propagation...')
+            break
+    return an, tn
+
+
+def fa(a, mu, c_t, S, m_s):
+    rho = atmospheric_density(a)
+    return -rho*np.sqrt(mu*a)*c_t*S/m_s
 
 
 def fx(v_x):
@@ -285,12 +315,21 @@ h = np.divide(h, 1000)
 xn = np.divide(xn, 1000)
 yn = np.divide(yn, 1000)
 
+# Test with Gauss equation
+start_time = 0
+end_time = 10*T
+time_step = 1
+a_vector, t_vector = gauss_integrator(a, mu_earth, C_t, S, M_spacecraft, start_time, end_time, time_step)
+a_vector = np.subtract(a_vector, R_earth)
+a_vector = np.divide(a_vector, 1000)
+
 # Plot radius vs time
 plt.figure()
-plt.plot(tn, h,  label='Altitude')
+plt.plot(tn, h,  label='Altitude (Equation of Motion)')
+plt.plot(t_vector, a_vector, label='Altitude (Gauss Equation)')
 plt.xlabel('Time, t, [seconds]')
 plt.ylabel('Altitude above Earth, h, [km]')
-plt.title('Orbital Decay Diagram for a satellite similar to the ISS')
+plt.title('Orbital Decay Diagram for a satellite similar to the ISS\nBased on equation of motion or Gauss equation')
 plt.grid()
 plt.legend()
 
