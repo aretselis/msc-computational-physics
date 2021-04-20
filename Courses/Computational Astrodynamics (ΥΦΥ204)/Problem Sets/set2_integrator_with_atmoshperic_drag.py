@@ -331,7 +331,6 @@ for i in range(0, np.size(xn)):
 for i in range(0, np.size(xn_rel)):
     r_rel[i] = np.sqrt(pow(xn_rel[i], 2) + pow(yn_rel[i], 2) + pow(zn_rel[i], 2))
     h_rel[i] = r_rel[i] - R_earth
-
 # Convert to xn, yn to km an
 r = np.divide(r, 1000)
 h = np.divide(h, 1000)
@@ -386,3 +385,7 @@ plt.yticks(visible=False)
 mark_inset(ax, zoom1, loc1=1, loc2=4, fc="none", ec="0.5")
 fig.legend()
 plt.show()
+
+print('For non-relative case, using equation of motion, satellite decays after %.3f' % tn[np.size(tn)-1])
+print('For relative case, using equation of motion, satellite decays after %.3f' % tn_rel[np.size(tn_rel)-1])
+print('Using Gauss equation, satellite decays after %.3f' % t_vector[np.size(t_vector)-1])
