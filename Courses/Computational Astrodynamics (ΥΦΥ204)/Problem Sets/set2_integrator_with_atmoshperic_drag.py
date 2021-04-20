@@ -75,7 +75,7 @@ def orbital_elements_to_cartesian(a, e, i, Omega, omega, M, mu):
     return r_vector, v_vector
 
 
-def runge_kutta_4(x_0, y_0, z_0, vx_0, vy_0, vz_0, mu, C_t, S, M_sc, t_start, t_end, h):
+def runge_kutta_4(x_0, y_0, z_0, vx_0, vy_0, vz_0, mu, C_t, S, M_sc, t_start, t_end, h, relative):
     # 4th order Runge Kutta orbit propagator
     # Input:
     # x_0, y_0, z_0, namely the coordinates of the position vector [meters]
@@ -84,6 +84,7 @@ def runge_kutta_4(x_0, y_0, z_0, vx_0, vy_0, vz_0, mu, C_t, S, M_sc, t_start, t_
     # t_start, initial time [seconds]
     # t_end, propagation end time [seconds]
     # h, integration step size [seconds]
+    # relative, 0 or 1, if 0 the integrator will not compute relative velocity to atmosphere, if 1 it will
     # Output is 7 vectors containing position, velocity and time information at each integration step
 
     min_propagation_altitude = 100000
@@ -103,7 +104,10 @@ def runge_kutta_4(x_0, y_0, z_0, vx_0, vy_0, vz_0, mu, C_t, S, M_sc, t_start, t_
         k1_x = fx(vx_0)
         k1_y = fy(vy_0)
         k1_z = fz(vz_0)
-        vx_rel, vy_rel, vz_rel = relative_velocity(x_0, y_0, z_0, vx_0, vy_0, vz_0)
+        if relative == 0:
+            vx_rel, vy_rel, vz_rel = vx_0, vy_0, vz_0
+        else:
+            vx_rel, vy_rel, vz_rel = relative_velocity(x_0, y_0, z_0, vx_0, vy_0, vz_0)
         k1_vx = fv_x(x_0, y_0, z_0, mu, vx_rel, vy_rel, vz_rel, C_t, S, M_sc)
         k1_vy = fv_y(x_0, y_0, z_0, mu, vx_rel, vy_rel, vz_rel, C_t, S, M_sc)
         k1_vz = fv_z(x_0, y_0, z_0, mu, vx_rel, vy_rel, vz_rel, C_t, S, M_sc)
@@ -114,7 +118,10 @@ def runge_kutta_4(x_0, y_0, z_0, vx_0, vy_0, vz_0, mu, C_t, S, M_sc, t_start, t_
         mid_vx = vx_0 + k1_vx * h / 2
         mid_vy = vy_0 + k1_vy * h / 2
         mid_vz = vz_0 + k1_vz * h / 2
-        vx_rel, vy_rel, vz_rel = relative_velocity(mid_x, mid_y, mid_z, mid_vx, mid_vy, mid_vz)
+        if relative == 0:
+            vx_rel, vy_rel, vz_rel = mid_vx, mid_vy, mid_vz
+        else:
+            vx_rel, vy_rel, vz_rel = relative_velocity(mid_x, mid_y, mid_z, mid_vx, mid_vy, mid_vz)
         # Calculate k2 values
         k2_x = fx(mid_vx)
         k2_y = fy(mid_vy)
@@ -129,7 +136,10 @@ def runge_kutta_4(x_0, y_0, z_0, vx_0, vy_0, vz_0, mu, C_t, S, M_sc, t_start, t_
         mid_vx = vx_0 + k2_vx * h / 2
         mid_vy = vy_0 + k2_vy * h / 2
         mid_vz = vz_0 + k2_vz * h / 2
-        vx_rel, vy_rel, vz_rel = relative_velocity(mid_x, mid_y, mid_z, mid_vx, mid_vy, mid_vz)
+        if relative == 0:
+            vx_rel, vy_rel, vz_rel = mid_vx, mid_vy, mid_vz
+        else:
+            vx_rel, vy_rel, vz_rel = relative_velocity(mid_x, mid_y, mid_z, mid_vx, mid_vy, mid_vz)
         # Calculate k3 values
         k3_x = fx(mid_vx)
         k3_y = fy(mid_vy)
@@ -144,7 +154,10 @@ def runge_kutta_4(x_0, y_0, z_0, vx_0, vy_0, vz_0, mu, C_t, S, M_sc, t_start, t_
         mid_vx = vx_0 + k3_vx * h
         mid_vy = vy_0 + k3_vy * h
         mid_vz = vz_0 + k3_vz * h
-        vx_rel, vy_rel, vz_rel = relative_velocity(mid_x, mid_y, mid_z, mid_vx, mid_vy, mid_vz)
+        if relative == 0:
+            vx_rel, vy_rel, vz_rel = mid_vx, mid_vy, mid_vz
+        else:
+            vx_rel, vy_rel, vz_rel = relative_velocity(mid_x, mid_y, mid_z, mid_vx, mid_vy, mid_vz)
         # Calculate k4 values
         k4_x = fx(mid_vx)
         k4_y = fy(mid_vy)
@@ -299,21 +312,33 @@ vz = v_vector[2]
 start_time = 0
 end_time = 10*T
 time_step = 1
+# Relative velocity case
+xn_rel, yn_rel, zn_rel, vxn_rel, vyn_rel, vzn_rel, tn_rel = \
+    runge_kutta_4(x, y, z, vx, vy, vz, mu_earth, C_t, S, M_spacecraft, start_time, end_time, time_step, 1)
+# Non-relative velocity case
 xn, yn, zn, vxn, vyn, vzn, tn = \
-    runge_kutta_4(x, y, z, vx, vy, vz, mu_earth, C_t, S, M_spacecraft, start_time, end_time, time_step)
+    runge_kutta_4(x, y, z, vx, vy, vz, mu_earth, C_t, S, M_spacecraft, start_time, end_time, time_step, 0)
+
 
 # Compute r magnitude
+r_rel = np.zeros(np.size(xn_rel))
+h_rel = np.zeros(np.size(xn_rel))
 r = np.zeros(np.size(xn))
 h = np.zeros(np.size(xn))
 for i in range(0, np.size(xn)):
     r[i] = np.sqrt(pow(xn[i], 2) + pow(yn[i], 2) + pow(zn[i], 2))
     h[i] = r[i] - R_earth
+for i in range(0, np.size(xn_rel)):
+    r_rel[i] = np.sqrt(pow(xn_rel[i], 2) + pow(yn_rel[i], 2) + pow(zn_rel[i], 2))
+    h_rel[i] = r_rel[i] - R_earth
 
 # Convert to xn, yn to km an
 r = np.divide(r, 1000)
 h = np.divide(h, 1000)
-xn = np.divide(xn, 1000)
-yn = np.divide(yn, 1000)
+r_rel = np.divide(r_rel, 1000)
+h_rel = np.divide(h_rel, 1000)
+xn_rel = np.divide(xn_rel, 1000)
+yn_rel = np.divide(yn_rel, 1000)
 
 # Test with Gauss equation
 start_time = 0
@@ -325,8 +350,9 @@ a_vector = np.divide(a_vector, 1000)
 
 # Plot radius vs time
 plt.figure()
-plt.plot(tn, h,  label='Altitude (Equation of Motion)')
-plt.plot(t_vector, a_vector, label='Altitude (Gauss Equation)')
+plt.plot(tn, h,  label='Equation of Motion, non-relative')
+plt.plot(tn_rel, h_rel,  label='Equation of Motion, relative)')
+plt.plot(t_vector, a_vector, label='Gauss Equation')
 plt.xlabel('Time, t, [seconds]')
 plt.ylabel('Altitude above Earth, h, [km]')
 plt.title('Orbital Decay Diagram for a satellite similar to the ISS\nBased on equation of motion or Gauss equation')
@@ -342,7 +368,7 @@ y_earth = radius*np.sin(theta)
 # Plot the orbit
 fig, ax = plt.subplots()
 ax.plot(x_earth, y_earth, label='Earth Radius')
-ax.plot(xn, yn, label='Orbit')
+ax.plot(xn_rel, yn_rel, label='Orbit')
 ax.grid()
 ax.set_xlabel('x-coordinate [km]')
 ax.set_ylabel('y-coordinate [km]')
@@ -351,7 +377,7 @@ ax.axis('scaled')
 # Create zoom-in window
 zoom1 = zoomed_inset_axes(ax, zoom = 5, loc=10)
 zoom1.plot(x_earth, y_earth)
-zoom1.plot(xn, yn)
+zoom1.plot(xn_rel, yn_rel)
 x1, x2, y1, y2 = 5500, 6800, 1200, 2200
 zoom1.set_xlim(x1, x2)
 zoom1.set_ylim(y1, y2)
