@@ -211,7 +211,7 @@ def fv_x(x, y, z, mu, x_sun, y_sun, z_sun, A, c_p, m_sc, current_time, shadow_en
     else:
         shadow = 1
     return -mu*x/pow(np.sqrt(pow(x, 2) + pow(y, 2) + pow(z, 2)), 3) \
-           - shadow*flux*A*c_p*(x-x_sun)/(c*m_sc*pow(np.fabs(x-x_sun), 3))
+           + shadow*flux*A*c_p*(x-x_sun)/(c*m_sc*np.fabs(x-x_sun))
 
 
 def fv_y(x, y, z, mu, x_sun, y_sun, z_sun, A, c_p, m_sc, current_time, shadow_enabled):
@@ -223,7 +223,7 @@ def fv_y(x, y, z, mu, x_sun, y_sun, z_sun, A, c_p, m_sc, current_time, shadow_en
     else:
         shadow = 1
     return -mu*y/pow(np.sqrt(pow(x, 2) + pow(y, 2) + pow(z, 2)), 3) \
-           - shadow*flux*A*c_p*(y-y_sun)/(c*m_sc*pow(np.fabs(y-y_sun), 3))
+           + shadow*flux*A*c_p*(y-y_sun)/(c*m_sc*np.fabs(y-y_sun))
 
 
 def fv_z(x, y, z, mu, x_sun, y_sun, z_sun, A, c_p, m_sc, current_time, shadow_enabled):
@@ -248,7 +248,7 @@ def flux_calculator(time):
     while phase_angle >= 2*np.pi:
         phase_angle -= 2*np.pi
     flux = 1358/(1+0.033*phase_angle)
-    return flux
+    return 1367
 
 
 def sun_position_calculator(x_initial, y_initial, propagation_time):
@@ -325,26 +325,43 @@ C_p = 1.5
 M_spacecraft = 400
 
 # Shadow? (0 is OFF, 1 is ON)
-shadow_case = 1
+shadow_case = 0
 
 # Propagate orbit (all times in seconds)
 start_time = 0
-end_time = 6000*T
-time_step = 100
+end_time = 1*T
+time_step = 1
 xn, yn, zn, vxn, vyn, vzn, tn = \
+    runge_kutta_4(x, y, z, vx, vy, vz, mu_earth, start_time, end_time, time_step,
+                  x_sun_initial, y_sun_initial, z_sun_initial, S, C_p, M_spacecraft, shadow_case)
+
+# Propagate case and take shadow into account
+shadow_case = 1
+xn_s, yn_s, zn_s, vxn_s, vyn_s, vzn_s, tn_s = \
     runge_kutta_4(x, y, z, vx, vy, vz, mu_earth, start_time, end_time, time_step,
                   x_sun_initial, y_sun_initial, z_sun_initial, S, C_p, M_spacecraft, shadow_case)
 
 a_values = np.zeros(np.size(xn))
 e_values = np.zeros(np.size(xn))
-r_values = np.zeros(np.size(xn))
+a_values_s = np.zeros(np.size(xn_s))
+e_values_s = np.zeros(np.size(xn_s))
 for counter in range(0, np.size(xn)):
     r_vector = np.array([xn[counter], yn[counter], zn[counter]])
     v_vector = np.array([vxn[counter], vyn[counter], vzn[counter]])
     a_values[counter], e_values[counter] = cartesian_to_orbital_elements(r_vector, v_vector, mu_earth)
-    r_values[counter] = np.sqrt(pow(xn[counter], 2) + pow(yn[counter], 2) + pow(zn[counter], 2))
+    r_vector_s = np.array([xn_s[counter], yn_s[counter], zn_s[counter]])
+    v_vector_s = np.array([vxn_s[counter], vyn_s[counter], vzn_s[counter]])
+    a_values_s[counter], e_values_s[counter] = cartesian_to_orbital_elements(r_vector_s, v_vector_s, mu_earth)
 
 plt.figure()
-plt.plot(tn[1:np.size(xn)], a_values[1:np.size(xn)])
+plt.plot(tn[1:np.size(xn)], a_values[1:np.size(xn)], label='Without shadowing')
+plt.plot(tn_s[1:np.size(xn_s)], a_values_s[1:np.size(xn_s)], label='With shadowing')
 plt.grid()
+# plt.legend()
+
+plt.figure()
+plt.plot(tn[1:np.size(xn)], e_values[1:np.size(xn)], label='Without shadowing')
+plt.plot(tn_s[1:np.size(xn_s)], e_values_s[1:np.size(xn_s)], label='With shadowing')
+plt.grid()
+# plt.legend()
 plt.show()
