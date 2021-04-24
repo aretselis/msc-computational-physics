@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+from tqdm import tqdm
 
 
 def orbital_elements_to_cartesian(a, e, i, Omega, omega, M, mu):
@@ -103,6 +104,12 @@ def runge_kutta_4(x_0, y_0, z_0, vx_0, vy_0, vz_0, mu, t_start, tmax, h, x_sun, 
     # t_start, initial time [seconds]
     # t_end, propagation end time [seconds]
     # h, integration step size [seconds]
+    # x_sun, y_sum, z_sun, namely the coordinates of the sun position vector [meters]
+    # A, area exposed to SRP [meters^2]
+    # C_p, coefficient of reflectivity []
+    # m_sc, spacecraft mass [kg]
+    # Case, use 0 to disable shadow from earth or 1 to enable it
+
     # Output is 7 vectors containing position, velocity and time information at each integration step
 
     # Log initial values
@@ -180,7 +187,11 @@ def runge_kutta_4(x_0, y_0, z_0, vx_0, vy_0, vz_0, mu, t_start, tmax, h, x_sun, 
         r_check = np.sqrt(pow(x_0, 2) + pow(y_0, 2) + pow(z_0, 2))
         if ground_check == 1 and r_check < R_earth:
             print('Warning: Spacecraft altitude touched the surface of the earth for time %d seconds.' % tn[counter])
-            print('Continuing propagation')
+            if case == 0:
+                print('(No shadow case)')
+            else:
+                print('(Shadow case)')
+            print('Continuing propagation...\n')
             ground_check = 0
         # Prepare for the next iteration and reset values
         counter += 1
@@ -210,7 +221,7 @@ def fz(v_z):
 
 
 def fv_x(x, y, z, mu, x_sun, y_sun, z_sun, A, c_p, m_sc, current_time, shadow_enabled):
-    # Assuming v_x'(t)=-mu*x/(sqrt(x^2+y^2+z^2))^3
+    # Assuming v_x'(t)=-mu*x/(sqrt(x^2+y^2+z^2))^3 + flux term
     c = 3*pow(10, 8)
     flux = flux_calculator(current_time)
     if shadow_enabled == 1:
@@ -222,7 +233,7 @@ def fv_x(x, y, z, mu, x_sun, y_sun, z_sun, A, c_p, m_sc, current_time, shadow_en
 
 
 def fv_y(x, y, z, mu, x_sun, y_sun, z_sun, A, c_p, m_sc, current_time, shadow_enabled):
-    # Assuming v_y'(t)=-mu*y/(sqrt(x^2+y^2+z^2))^3
+    # Assuming v_y'(t)=-mu*y/(sqrt(x^2+y^2+z^2))^3 + flux term
     c = 3*pow(10, 8)
     flux = flux_calculator(current_time)
     if shadow_enabled == 1:
@@ -234,7 +245,7 @@ def fv_y(x, y, z, mu, x_sun, y_sun, z_sun, A, c_p, m_sc, current_time, shadow_en
 
 
 def fv_z(x, y, z, mu, x_sun, y_sun, z_sun, A, c_p, m_sc, current_time, shadow_enabled):
-    # Assuming v_z'(t)=-mu*z/(sqrt(x^2+y^2+z^2))^3
+    # Assuming v_z'(t)=-mu*z/(sqrt(x^2+y^2+z^2))^3 + flux term
     c = 3*pow(10, 8)
     flux = flux_calculator(current_time)
     if shadow_enabled == 1:
@@ -257,8 +268,8 @@ def flux_calculator(time):
     # Make phase_angle in [0, 2*pi]
     while phase_angle >= 2*np.pi:
         phase_angle -= 2*np.pi
-    flux = 1358/(1+0.033*phase_angle)
-    return 1358
+    flux = 1358/(1+0.033*np.cos(phase_angle))
+    return flux
 
 
 def sun_position_calculator(x_initial, y_initial, propagation_time):
@@ -341,7 +352,7 @@ shadow_case = 0
 
 # Propagate orbit (all times in seconds)
 start_time = 0
-end_time = 10*T
+end_time = 600*T
 time_step = 10
 xn, yn, zn, vxn, vyn, vzn, tn = \
     runge_kutta_4(x, y, z, vx, vy, vz, mu_earth, start_time, end_time, time_step,
@@ -353,17 +364,20 @@ xn_s, yn_s, zn_s, vxn_s, vyn_s, vzn_s, tn_s = \
     runge_kutta_4(x, y, z, vx, vy, vz, mu_earth, start_time, end_time, time_step,
                   x_sun_initial, y_sun_initial, z_sun_initial, S, C_p, M_spacecraft, shadow_case)
 
+# Log desired values
 a_values = np.zeros(np.size(xn))
 e_values = np.zeros(np.size(xn))
 a_values_s = np.zeros(np.size(xn_s))
 e_values_s = np.zeros(np.size(xn_s))
-for counter in range(0, np.size(xn)):
-    r_vector = np.array([xn[counter], yn[counter], zn[counter]])
-    v_vector = np.array([vxn[counter], vyn[counter], vzn[counter]])
-    a_values[counter], e_values[counter] = cartesian_to_orbital_elements(r_vector, v_vector, mu_earth)
-    r_vector_s = np.array([xn_s[counter], yn_s[counter], zn_s[counter]])
-    v_vector_s = np.array([vxn_s[counter], vyn_s[counter], vzn_s[counter]])
-    a_values_s[counter], e_values_s[counter] = cartesian_to_orbital_elements(r_vector_s, v_vector_s, mu_earth)
+r_vector = np.column_stack((xn, yn, zn))
+v_vector = np.column_stack((vxn, vyn, vzn))
+r_vector_s = np.column_stack((xn_s, yn_s, zn_s))
+v_vector_s = np.column_stack((vxn_s, vyn_s, vzn_s))
+for counter in tqdm(range(0, np.size(xn))):
+    a_values[counter], e_values[counter] = \
+        cartesian_to_orbital_elements(r_vector[counter][0:3], v_vector[counter][0:3], mu_earth)
+    a_values_s[counter], e_values_s[counter] = \
+        cartesian_to_orbital_elements(r_vector_s[counter][0:3], v_vector_s[counter][0:3], mu_earth)
 
 # Plot for one period
 start_index = 1
@@ -376,7 +390,6 @@ plt.ylabel('Semimajor axis, a, [meters]')
 plt.xlabel('Time, t, [seconds]')
 plt.title('Semimajor axis vs time for one orbit')
 plt.legend(['Without shadowing', 'With shadowing'])
-
 plt.figure()
 plt.plot(tn[1:int(T)], e_values[1:int(T)])
 plt.plot(tn_s[1:int(T)], e_values_s[1:int(T)])
@@ -395,7 +408,6 @@ plt.ylabel('Semimajor axis, a, [meters]')
 plt.xlabel('Time, t, [seconds]')
 plt.title('Semimajor axis vs time for 6000 orbits')
 plt.legend(['Without shadowing', 'With shadowing'])
-
 plt.figure()
 plt.plot(tn[1:np.size(xn)], e_values[1:np.size(xn)])
 plt.plot(tn_s[1:np.size(xn_s)], e_values_s[1:np.size(xn_s)])
