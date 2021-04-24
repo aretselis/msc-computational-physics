@@ -114,6 +114,8 @@ def runge_kutta_4(x_0, y_0, z_0, vx_0, vy_0, vz_0, mu, t_start, tmax, h, x_sun, 
     vyn = [vy_0]
     vzn = [vz_0]
     counter = 0
+    ground_check = 1
+    R_earth = 6371000
     # Main RK4 loop
     while tn[counter] < tmax:
         # Calculate sun position
@@ -175,6 +177,11 @@ def runge_kutta_4(x_0, y_0, z_0, vx_0, vy_0, vz_0, mu, t_start, tmax, h, x_sun, 
         vxn.append(vxn[counter] + (h / 6) * (k1_vx + 2 * k2_vx + 2 * k3_vx + k4_vx))
         vyn.append(vyn[counter] + (h / 6) * (k1_vy + 2 * k2_vy + 2 * k3_vy + k4_vy))
         vzn.append(vzn[counter] + (h / 6) * (k1_vz + 2 * k2_vz + 2 * k3_vz + k4_vz))
+        r_check = np.sqrt(pow(x_0, 2) + pow(y_0, 2) + pow(z_0, 2))
+        if ground_check == 1 and r_check < R_earth:
+            print('Warning: Spacecraft altitude touched the surface of the earth for time %d seconds.' % tn[counter])
+            print('Continuing propagation')
+            ground_check = 0
         # Prepare for the next iteration and reset values
         counter += 1
         tn.append(tn[counter - 1] + h)
@@ -211,7 +218,7 @@ def fv_x(x, y, z, mu, x_sun, y_sun, z_sun, A, c_p, m_sc, current_time, shadow_en
     else:
         shadow = 1
     return -mu*x/pow(np.sqrt(pow(x, 2) + pow(y, 2) + pow(z, 2)), 3) \
-           + shadow*flux*A*c_p*(x-x_sun)/(c*m_sc*np.fabs(x-x_sun))
+           + shadow*flux*A*c_p*(x-x_sun)/(c*m_sc*np.sqrt(pow(x-x_sun, 2) + pow(y-y_sun,2) + pow(z-z_sun, 2)))
 
 
 def fv_y(x, y, z, mu, x_sun, y_sun, z_sun, A, c_p, m_sc, current_time, shadow_enabled):
@@ -223,7 +230,7 @@ def fv_y(x, y, z, mu, x_sun, y_sun, z_sun, A, c_p, m_sc, current_time, shadow_en
     else:
         shadow = 1
     return -mu*y/pow(np.sqrt(pow(x, 2) + pow(y, 2) + pow(z, 2)), 3) \
-           + shadow*flux*A*c_p*(y-y_sun)/(c*m_sc*np.fabs(y-y_sun))
+           + shadow*flux*A*c_p*(y-y_sun)/(c*m_sc*np.sqrt(pow(x-x_sun, 2) + pow(y-y_sun,2) + pow(z-z_sun, 2)))
 
 
 def fv_z(x, y, z, mu, x_sun, y_sun, z_sun, A, c_p, m_sc, current_time, shadow_enabled):
@@ -238,7 +245,10 @@ def fv_z(x, y, z, mu, x_sun, y_sun, z_sun, A, c_p, m_sc, current_time, shadow_en
 
 
 def flux_calculator(time):
-
+    # Calculates the amount of flux received by the satellite, assuming it is relatively close to the earth
+    # The calculator assumes that the sun is initially (t=0) alligned with the positive OX axis of the ICRF frame
+    # Input is time since t=0 [seconds]
+    # Output is flux [W/m^2
     # Convert to the desired units
     n = 1
     time = time/(60*60*24)
@@ -248,11 +258,13 @@ def flux_calculator(time):
     while phase_angle >= 2*np.pi:
         phase_angle -= 2*np.pi
     flux = 1358/(1+0.033*phase_angle)
-    return 1367
+    return 1358
 
 
 def sun_position_calculator(x_initial, y_initial, propagation_time):
-
+    # Rotates the sun around the earth in the ICRF frame
+    # Input is the initial position vector of the sun [meters] and propagation time [seconds]
+    # Output is the position vector of the sun [meters] after propagation
     n_dot = 1  # [deg/day]
     propagation_time = propagation_time / (60 * 60 * 24)
     theta = n_dot*propagation_time
@@ -329,8 +341,8 @@ shadow_case = 0
 
 # Propagate orbit (all times in seconds)
 start_time = 0
-end_time = 1*T
-time_step = 1
+end_time = 10*T
+time_step = 10
 xn, yn, zn, vxn, vyn, vzn, tn = \
     runge_kutta_4(x, y, z, vx, vy, vz, mu_earth, start_time, end_time, time_step,
                   x_sun_initial, y_sun_initial, z_sun_initial, S, C_p, M_spacecraft, shadow_case)
@@ -353,15 +365,44 @@ for counter in range(0, np.size(xn)):
     v_vector_s = np.array([vxn_s[counter], vyn_s[counter], vzn_s[counter]])
     a_values_s[counter], e_values_s[counter] = cartesian_to_orbital_elements(r_vector_s, v_vector_s, mu_earth)
 
+# Plot for one period
+start_index = 1
+end_index = int(T/time_step)
 plt.figure()
-plt.plot(tn[1:np.size(xn)], a_values[1:np.size(xn)], label='Without shadowing')
-plt.plot(tn_s[1:np.size(xn_s)], a_values_s[1:np.size(xn_s)], label='With shadowing')
+plt.plot(tn[start_index:end_index], a_values[start_index:end_index])
+plt.plot(tn_s[start_index:end_index], a_values_s[start_index:end_index])
 plt.grid()
-# plt.legend()
+plt.ylabel('Semimajor axis, a, [meters]')
+plt.xlabel('Time, t, [seconds]')
+plt.title('Semimajor axis vs time for one orbit')
+plt.legend(['Without shadowing', 'With shadowing'])
 
 plt.figure()
-plt.plot(tn[1:np.size(xn)], e_values[1:np.size(xn)], label='Without shadowing')
-plt.plot(tn_s[1:np.size(xn_s)], e_values_s[1:np.size(xn_s)], label='With shadowing')
+plt.plot(tn[1:int(T)], e_values[1:int(T)])
+plt.plot(tn_s[1:int(T)], e_values_s[1:int(T)])
 plt.grid()
-# plt.legend()
+plt.ylabel('Eccentricity, e, []')
+plt.xlabel('Time, t, [seconds]')
+plt.title('Eccentricity vs time for one orbit')
+plt.legend(['Without shadowing', 'With shadowing'])
+
+# Plot the entire orbit
+plt.figure()
+plt.plot(tn[1:np.size(xn)], a_values[1:np.size(xn)])
+plt.plot(tn_s[1:np.size(xn_s)], a_values_s[1:np.size(xn_s)])
+plt.grid()
+plt.ylabel('Semimajor axis, a, [meters]')
+plt.xlabel('Time, t, [seconds]')
+plt.title('Semimajor axis vs time for 6000 orbits')
+plt.legend(['Without shadowing', 'With shadowing'])
+
+plt.figure()
+plt.plot(tn[1:np.size(xn)], e_values[1:np.size(xn)])
+plt.plot(tn_s[1:np.size(xn_s)], e_values_s[1:np.size(xn_s)])
+plt.grid()
+plt.ylabel('Eccentricity, e, []')
+plt.xlabel('Time, t, [seconds]')
+plt.title('Eccentricity vs time for 6000 orbits')
+plt.legend(['Without shadowing', 'With shadowing'])
+plt.legend(['Without shadowing', 'With shadowing'])
 plt.show()
