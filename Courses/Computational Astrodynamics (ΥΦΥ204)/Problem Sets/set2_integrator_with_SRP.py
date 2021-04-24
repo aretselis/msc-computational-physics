@@ -1,6 +1,5 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from tqdm import tqdm
 
 
 def orbital_elements_to_cartesian(a, e, i, Omega, omega, M, mu):
@@ -352,7 +351,7 @@ shadow_case = 0
 
 # Propagate orbit (all times in seconds)
 start_time = 0
-end_time = 600*T
+end_time = 6000*T
 time_step = 10
 xn, yn, zn, vxn, vyn, vzn, tn = \
     runge_kutta_4(x, y, z, vx, vy, vz, mu_earth, start_time, end_time, time_step,
@@ -373,7 +372,7 @@ r_vector = np.column_stack((xn, yn, zn))
 v_vector = np.column_stack((vxn, vyn, vzn))
 r_vector_s = np.column_stack((xn_s, yn_s, zn_s))
 v_vector_s = np.column_stack((vxn_s, vyn_s, vzn_s))
-for counter in tqdm(range(0, np.size(xn))):
+for counter in range(0, np.size(xn)):
     a_values[counter], e_values[counter] = \
         cartesian_to_orbital_elements(r_vector[counter][0:3], v_vector[counter][0:3], mu_earth)
     a_values_s[counter], e_values_s[counter] = \
