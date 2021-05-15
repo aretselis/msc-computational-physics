@@ -26,16 +26,22 @@ size = 200
 dx = 0.01
 grid_start = 0
 grid_end = size - 1
+TFSF_location = 50
 
 # Source definition
 frequency = pow(10, 9)
 T = 1 / frequency
 lambda_source = c / frequency
 omega = 2 * np.pi * frequency
-source_location = 50
+source_location = 51
+
+# Material definition, ranging from [position, infinity)
+
+material_location = 150
+sigma_mat = 0.01
 
 # Time
-N_periods = 5
+N_periods = 10
 S = 0.99
 dt = S * dx / c
 t_max = round(N_periods * T / dt)
@@ -43,20 +49,34 @@ t_max = round(N_periods * T / dt)
 # Add and initialize electric and magnetic field
 Hy = np.zeros(size)
 Ez = np.zeros(size)
+Ez_inc = np.zeros(size)
+Hy_inc = np.zeros(size)
 Ez_recording = np.zeros((t_max, size))
 Hy_recording = np.zeros((t_max, size))
 epsilon_r = np.ones(size)
 
 # Advance time
+H_const_free_space = dt / (mu_0 * dx)
+E_const_free_space = dt / (epsilon_0 * dx)
+
 
 for j in range(0, t_max):
 
     # Update magnetic field
     for i in range(0, size - 1):
-        Hy[i] = Hy[i] - (dt / mu_0) * ((Ez[i + 1] - Ez[i]) / dx)
+        if i != TFSF_location and i < material_location:
+            Hy[i] = Hy[i] - H_const_free_space * (Ez[i + 1] - Ez[i])
+        elif i == TFSF_location:
+            Hy[i] = Hy[i] - H_const_free_space * (Ez[TFSF_location]-Ez[TFSF_location-1]) + H_const_free_space*Ez_inc[TFSF_location]
+        else:
 
+
+    # Update electric field
     for i in range(1, size):
-        Ez[i] = Ez[i] - (dt / epsilon_0) * ((Hy[i] - Hy[i - 1]) / dx)
+        if i != TFSF_location and i < material_location:
+            Ez[i] = Ez[i] - E_const_free_space * (Hy[i] - Hy[i - 1])
+        elif i == TFSF_location:
+            Ez[i] = Ez[i] - E_const_free_space * (Hy[i] - Hy[i - 1]) + E_const_free_space*Hy_inc[i-1]
 
     # Hardwire a source
     Ez[source_location] = source(omega, j*dt)
@@ -75,6 +95,12 @@ for j in range(0, t_max):
     Ez_recording[j][:] = Ez
     Hy_recording[j][:] = Hy
 
+    # Record inc fields
+    for i in range(0, size - 1):
+        Hy_inc[i] = Hy_inc[i] - H_const_free_space * (Ez_inc[i+1] - Ez_inc[i])
+    for i in range(1, size):
+        Ez_inc[i] = Ez_inc[i] - E_const_free_space * (Hy_inc[i] - Hy_inc[i - 1])
+
 fig, ax = plt.subplots()
 xdata, ydata = [], []
 ln, = plt.plot([], [])
@@ -82,13 +108,14 @@ ln, = plt.plot([], [])
 
 def init():
     ax.set_xlim(0, 200)
-    ax.set_ylim(-4 * pow(10,-3), 4 * pow(10,-3))
+    #ax.set_ylim(-4 * pow(10,-3), 4 * pow(10,-3))
+    ax.set_ylim(-1.2, 1.2)
     return ln,
 
 
 def update(frame):
     xdata = np.arange(0, size, 1)
-    ydata = Hy_recording[frame][:]
+    ydata = Ez_recording[frame][:]
     ln.set_data(xdata, ydata)
     return ln,
 
