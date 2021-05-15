@@ -33,7 +33,7 @@ frequency = pow(10, 9)
 T = 1 / frequency
 lambda_source = c / frequency
 omega = 2 * np.pi * frequency
-source_location = 51
+source_location = 60
 
 # Material definition, ranging from [position, infinity)
 
@@ -62,24 +62,25 @@ E_const_free_space = dt / (epsilon_0 * dx)
 
 for j in range(0, t_max):
 
+    # Record inc fields
+    for i in range(0, size - 1):
+        Hy_inc[i] = Hy_inc[i] - H_const_free_space * (Ez_inc[i+1] - Ez_inc[i])
+    for i in range(1, size):
+        Ez_inc[i] = Ez_inc[i] - E_const_free_space * (Hy_inc[i] - Hy_inc[i - 1])
+
     # Update magnetic field
     for i in range(0, size - 1):
-        if i != TFSF_location and i < material_location:
-            Hy[i] = Hy[i] - H_const_free_space * (Ez[i + 1] - Ez[i])
-        elif i == TFSF_location:
-            Hy[i] = Hy[i] - H_const_free_space * (Ez[TFSF_location]-Ez[TFSF_location-1]) + H_const_free_space*Ez_inc[TFSF_location]
-        else:
-
+        Hy[i] = Hy[i] - H_const_free_space * (Ez[i + 1] - Ez[i])
 
     # Update electric field
     for i in range(1, size):
-        if i != TFSF_location and i < material_location:
-            Ez[i] = Ez[i] - E_const_free_space * (Hy[i] - Hy[i - 1])
-        elif i == TFSF_location:
-            Ez[i] = Ez[i] - E_const_free_space * (Hy[i] - Hy[i - 1]) + E_const_free_space*Hy_inc[i-1]
+        Ez[i] = Ez[i] - E_const_free_space * (Hy[i] - Hy[i - 1])
 
+    Hy[TFSF_location] = Hy[TFSF_location] + H_const_free_space*Ez_inc[TFSF_location]
+    Ez[TFSF_location] = Ez[TFSF_location] + E_const_free_space*Hy_inc[TFSF_location]
     # Hardwire a source
     Ez[source_location] = source(omega, j*dt)
+    Ez_inc[source_location] = source(omega, j*dt)
 
     # Mur absorving boundary conditions
     if j > 2:
@@ -94,12 +95,6 @@ for j in range(0, t_max):
     # Record Ez & Hy
     Ez_recording[j][:] = Ez
     Hy_recording[j][:] = Hy
-
-    # Record inc fields
-    for i in range(0, size - 1):
-        Hy_inc[i] = Hy_inc[i] - H_const_free_space * (Ez_inc[i+1] - Ez_inc[i])
-    for i in range(1, size):
-        Ez_inc[i] = Ez_inc[i] - E_const_free_space * (Hy_inc[i] - Hy_inc[i - 1])
 
 fig, ax = plt.subplots()
 xdata, ydata = [], []
