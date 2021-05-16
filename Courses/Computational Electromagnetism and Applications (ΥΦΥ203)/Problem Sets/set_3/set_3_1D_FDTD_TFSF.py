@@ -116,6 +116,8 @@ def init():
     ax.grid()
     ax.axvline(TFSF_location, color='red')
     ax.set_title("TFSF Implementation with material on the right")
+    ax.set_xlabel("Grid index, x")
+    ax.set_ylabel("Electric field, Ez")
     ax.text((TFSF_location-50), 1.8, 'SF')
     ax.text((TFSF_location + 50), 1.8, 'TF')
     ax.text((material_location + 50), 1.8, 'Material')
