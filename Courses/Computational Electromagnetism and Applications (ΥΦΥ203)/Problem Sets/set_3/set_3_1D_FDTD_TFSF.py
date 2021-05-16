@@ -1,5 +1,4 @@
 import numpy as np
-from scipy.optimize import minimize
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 
@@ -11,10 +10,6 @@ def source(omega, t):
         return 2*np.sin(omega * t) * np.exp(-pow(t - t0, 2) / pow(tw, 2))
     else:
         return 2*np.sin(omega * t)
-
-
-# def advance_time(Hy, Ex, dt, c):
-
 
 # Constants
 c = 3 * pow(10, 8)
@@ -88,6 +83,7 @@ for j in range(0, t_max):
     # Hardwire a source
     Ez[source_location] = Ez[source_location] + source(omega, j * dt)
     Ez_inc[source_location] = Ez_inc[source_location] + source(omega, j * dt)
+    # Update TFSF boundaries
     Hy[TFSF_location] = Hy[TFSF_location] + H_const_free_space * Ez_inc[TFSF_location + 1]
     Ez[TFSF_location + 1] = Ez[TFSF_location + 1] + E_const_free_space * Hy_inc[TFSF_location]
 
@@ -104,6 +100,8 @@ for j in range(0, t_max):
     # Record Ez & Hy
     Ez_recording[j][:] = Ez
     Hy_recording[j][:] = Hy
+
+# Prepare to create the movie
 fig, ax = plt.subplots()
 xdata, ydata = [], []
 ln, = plt.plot([], [])
@@ -138,13 +136,3 @@ writer=animation.writers['ffmpeg'](fps=25)
 plt.ioff()
 dpi = 500
 ani.save('TFSF_implementation_retselis.mp4',writer=writer,dpi=dpi)
-plt.show()
-
-plt.figure()
-x_data = np.zeros(5)
-y_data = np.zeros(5)
-for i in range(1,6):
-    y_data[i-1] = pow((1-np.sqrt(i))/(np.sqrt(i)+1),2)
-    x_data[i-1] = i
-plt.plot(x_data, y_data, '.')
-plt.show()
