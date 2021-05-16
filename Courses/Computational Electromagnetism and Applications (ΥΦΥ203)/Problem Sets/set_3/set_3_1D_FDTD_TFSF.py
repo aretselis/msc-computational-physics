@@ -21,29 +21,29 @@ c = 3 * pow(10, 8)
 mu_0 = 4 * np.pi * pow(10, -7)
 epsilon_0 = 1 / (pow(c, 2) * mu_0)
 
-# Grid
-size = 300
-dx = 0.01
-grid_start = 0
-grid_end = size - 1
-TFSF_location = 50
-
 # Source definition
 frequency = pow(10, 9)
 T = 1 / frequency
 lambda_source = c / frequency
 omega = 2 * np.pi * frequency
-source_location = 80
+source_location = 90
+
+# Grid
+size = 500
+dx = lambda_source/25
+grid_start = 0
+grid_end = size - 1
+TFSF_location = 75
 
 # Time
-N_periods = 15
+N_periods = 30
 S = 0.99
 dt = S * dx / c
 t_max = round(N_periods * T / dt)
 
 # Material definition, ranging from [position, infinity)
 
-material_location = 207
+material_location = 250
 sigma_mat = 0.01
 epsilon_r = 2
 mu_r = 1
@@ -112,8 +112,14 @@ ln, = plt.plot([], [])
 def init():
     ax.set_xlim(0, size)
     #ax.set_ylim(-4 * pow(10,-3), 4 * pow(10,-3))
-    ax.set_ylim(-1.2, 1.2)
+    ax.set_ylim(-2, 2)
     ax.grid()
+    ax.axvline(TFSF_location, color='red')
+    ax.set_title("TFSF Implementation with material on the right")
+    ax.text((TFSF_location-50), 1.8, 'SF')
+    ax.text((TFSF_location + 50), 1.8, 'TF')
+    ax.text((material_location + 50), 1.8, 'Material')
+    ax.axvspan(material_location, size, facecolor='green', alpha=0.3)
     return ln,
 
 
@@ -132,7 +138,7 @@ plt.figure()
 x_data = np.zeros(5)
 y_data = np.zeros(5)
 for i in range(1,6):
-    y_data[i-1] = pow((np.sqrt(i)-1)/(np.sqrt(i)+1), 2)
+    y_data[i-1] = pow((1-np.sqrt(i))/(np.sqrt(i)+1),2)
     x_data[i-1] = i
-plt.plot(x_data, y_data)
+plt.plot(x_data, y_data, '.')
 plt.show()
