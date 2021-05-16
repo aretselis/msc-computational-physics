@@ -134,6 +134,10 @@ def update(frame):
 
 ani = animation.FuncAnimation(fig, update, frames=t_max,
                               init_func=init, interval=1)
+writer=animation.writers['ffmpeg'](fps=25)
+plt.ioff()
+dpi = 500
+ani.save('TFSF_implementation_retselis.mp4',writer=writer,dpi=dpi)
 plt.show()
 
 plt.figure()
