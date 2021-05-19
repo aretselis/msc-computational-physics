@@ -108,6 +108,17 @@ def eccentric_anomaly_calculator(time, n, tau, e):
     E = E_next
     return E
 
+
+def plot_results(x, y, e, theta_0, theta_dot_0):
+    plt.figure()
+    plt.plot(x, y)
+    plt.title(r"$\psi(t)$ for e=%.1f" % e + "\n" +
+              r"with initial conditions $\theta_{0}=$%.2f and $\dot{\theta}_{0}$=%.2f" % (theta_0, theta_dot_0))
+    plt.grid()
+    plt.show()
+
+
+# System properties
 a = 1
 mu = 1
 tau = 0
@@ -116,19 +127,43 @@ T = np.sqrt(4*pow(np.pi, 2)*pow(a, 3)/mu)
 n = 2*np.pi/T
 epsilon = 0.05
 
-# Case 1
-e = 0
-theta_0 = 1.57
-theta_dot_0 = 1.0
-
+# Integration properties
 start_time = 0
 end_time = 200
 time_step = 0.1
 
-x_values, y_values = runge_kutta_4(theta_0, theta_dot_0, a, epsilon, e, n, tau, f_0, start_time, end_time, time_step)
+# Case 1
+e = 0
+theta_0 = 0.1
+theta_dot_0 = 1.0
 
-plt.figure()
-plt.plot(x_values, y_values)
-plt.grid()
-plt.show()
+# Solve and plot result
+time, psi_values = runge_kutta_4(theta_0, theta_dot_0, a, epsilon, e, n, tau, f_0, start_time, end_time, time_step)
+plot_results(time, psi_values, e, theta_0, theta_dot_0)
 
+# Case 2
+e = 0
+theta_0 = 1.57
+theta_dot_0 = 1.0
+
+# Solve and plot result
+time, psi_values = runge_kutta_4(theta_0, theta_dot_0, a, epsilon, e, n, tau, f_0, start_time, end_time, time_step)
+plot_results(time, psi_values, e, theta_0, theta_dot_0)
+
+# Case 3
+e = 0.3
+theta_0 = 0.1
+theta_dot_0 = 1.0
+
+# Solve and plot result
+time, psi_values = runge_kutta_4(theta_0, theta_dot_0, a, epsilon, e, n, tau, f_0, start_time, end_time, time_step)
+plot_results(time, psi_values, e, theta_0, theta_dot_0)
+
+# Case 4
+e = 0.3
+theta_0 = 1.57
+theta_dot_0 = 1.0
+
+# Solve and plot result
+time, psi_values = runge_kutta_4(theta_0, theta_dot_0, a, epsilon, e, n, tau, f_0, start_time, end_time, time_step)
+plot_results(time, psi_values, e, theta_0, theta_dot_0)
