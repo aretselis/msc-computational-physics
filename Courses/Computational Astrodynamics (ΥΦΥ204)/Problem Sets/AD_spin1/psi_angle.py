@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
+
 def runge_kutta_4(theta_0, theta_dot_0, a, epsilon, ecc, n, tau, initial_anomaly, t_start, t_max, h):
     # 4th order Runge-Kutta method for the spin-orbit coupling problem
     # Input:
@@ -9,7 +10,8 @@ def runge_kutta_4(theta_0, theta_dot_0, a, epsilon, ecc, n, tau, initial_anomaly
     # epsilon, asphericity []
     # ecc, eccentricity []
     # n, Orbit mean motion [rad]
-    # tau, time of pericenter
+    # tau, time of pericenter [time units]
+    # initial_anomaly, [rad]
     # t_start, initial time [time units]
     # t_max, RK4 end time [time units]
     # h, integration step size [time units]
@@ -29,7 +31,6 @@ def runge_kutta_4(theta_0, theta_dot_0, a, epsilon, ecc, n, tau, initial_anomaly
         k1_thetadot, anomaly = f_theta_dot(theta_0, t_vector[counter], n, tau, ecc, a, epsilon)
         # Calculate midpoint values
         mid_theta = theta_0 + k1_theta * h/2
-        #print(mid_theta, anomaly)
         mid_thetadot = theta_dot_0 + k1_thetadot * h/2
         # Calculate k2 values
         k2_theta = f_theta(mid_thetadot)
@@ -67,6 +68,7 @@ def f_theta(theta_dot):
     # Assuming theta'(t) = theta_dot
     return theta_dot
 
+
 def f_theta_dot(theta, time, n, tau, e, a, epsilon):
     # Assuming theta''(t) = -epsilon*(1/r^3)sin(2theta-2f)
     E = eccentric_anomaly_calculator(time, n, tau, e)
@@ -76,13 +78,14 @@ def f_theta_dot(theta, time, n, tau, e, a, epsilon):
     r = a*(1-e*np.cos(E))
     return -(epsilon/pow(r, 3))*np.sin(2*theta-2*ni), ni
 
+
 def eccentric_anomaly_calculator(time, n, tau, e):
     # Compute E using Newton-Raphson
     # Define initial value for E_0
     M = n * (time - tau)
     if M <np.pi:
         E_0 = M - e
-    else:# M > np.pi:
+    else:
         E_0 = M + e
     # Define f and f dot
     f = lambda E: M - E + e*np.sin(E)
