@@ -179,9 +179,36 @@ time_step = 0.01
 
 # Case 1
 e = 0
+theta_0 = 0.1
+theta_dot_0 = 1.0
+
+# Solve and plot result
+time, fli_values = runge_kutta_4(theta_0, theta_dot_0, a, epsilon, e, n, tau, f_0, start_time, end_time, time_step)
+plot_results(time, fli_values, e, theta_0, theta_dot_0)
+
+# Case 2
+e = 0
 theta_0 = 1.57
 theta_dot_0 = 1.0
 
 # Solve and plot result
-time, psi_values = runge_kutta_4(theta_0, theta_dot_0, a, epsilon, e, n, tau, f_0, start_time, end_time, time_step)
-plot_results(time, psi_values, e, theta_0, theta_dot_0)
+time, fli_values = runge_kutta_4(theta_0, theta_dot_0, a, epsilon, e, n, tau, f_0, start_time, end_time, time_step)
+plot_results(time, fli_values, e, theta_0, theta_dot_0)
+
+# Case 3
+e = 0.3
+theta_0 = 0.1
+theta_dot_0 = 1.0
+
+# Solve and plot result
+time, fli_values = runge_kutta_4(theta_0, theta_dot_0, a, epsilon, e, n, tau, f_0, start_time, end_time, time_step)
+plot_results(time, fli_values, e, theta_0, theta_dot_0)
+
+# Case 4
+e = 0.3
+theta_0 = 1.57
+theta_dot_0 = 1.0
+
+# Solve and plot result
+time, fli_values = runge_kutta_4(theta_0, theta_dot_0, a, epsilon, e, n, tau, f_0, start_time, end_time, time_step)
+plot_results(time, fli_values, e, theta_0, theta_dot_0)
