@@ -1,8 +1,7 @@
 import matplotlib.pyplot as plt
 
 
-def linear_congruential_generator(N):
-    xn_prev = 0.5
+def linear_congruential_generator(xn_prev, N):
     numbers_list = []
     for i in range(0, N):
         a = 1812433253
