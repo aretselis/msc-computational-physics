@@ -25,7 +25,7 @@ def component_reliability_function(time, mttf):
 
 
 # Number of experiment runs
-runs = 1000
+runs = 10000
 random_numbers = linear_congruential_generator(0.742, runs+1)
 
 # Calculate theoretical reliability at each time step
@@ -37,7 +37,7 @@ for i in range(0, np.size(time_domain)):
 
 # Main Monte-Carlo Simulation
 failure_time_system = []
-working_devices = np.zeros(np.size(time_domain))
+working_systems = np.zeros(np.size(time_domain))
 for i in range(0, runs):
     random_value_first = random_numbers[i]
     random_value_second = random_numbers[i+1]
@@ -45,17 +45,17 @@ for i in range(0, runs):
     state_second_mcu = 1
     for j in range(0, np.size(time_domain)):
         if theoretical_component_reliability[j] < random_value_first:
-            for k in range(j, np.size(time_domain)-j):
+            for k in range(j, np.size(time_domain)):
                 if theoretical_component_reliability[k-j] < random_value_second:
-                    failure_time_system.append(time_domain[j])
+                    failure_time_system.append(time_domain[k])
                     break
-                working_devices[k] += 1
+                working_systems[k] += 1
             break
-        working_devices[j] += 1
+        working_systems[j] += 1
 
 plt.figure()
 plt.plot(time_domain, theoretical_system_reliability, label="Theoretical value")
-plt.plot(time_domain, working_devices / runs, '.', markersize=2, label="Monte-Carlo Simulation")
+plt.plot(time_domain, working_systems / runs, '.', markersize=2, label="Monte-Carlo Simulation")
 plt.xlabel("Time, t, [days]")
 plt.ylabel("Reliability, R, []")
 plt.title("Case 3 \n Dual MCU architecture (Cold Redundancy)")
