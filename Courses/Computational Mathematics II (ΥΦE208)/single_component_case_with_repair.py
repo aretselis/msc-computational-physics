@@ -20,27 +20,46 @@ def reliability_function(time, mttf):
 
 
 # Number of experiment runs
-runs = 1000
-random_numbers = linear_congruential_generator(0.02, runs)
+runs = 10000
+random_numbers = linear_congruential_generator(0.02, 2*runs)
+repair_random_number = linear_congruential_generator(0.43, runs)
 
 # Calculate theoretical reliability at each time step
 theoretical_reliability = []
 for i in range(0, np.size(time_domain)):
     theoretical_reliability.append(reliability_function(time_domain[i], MTTF_MCU))
 
+# Potential repair times
+
+repair_time = [3, 8] # in days
+
 # Main Monte-Carlo Simulation
 failure_time = []
 working_devices = np.zeros(np.size(time_domain))
 for i in range(0, runs):
     random_value = random_numbers[i]
+    # Reset operational state
+    operating = 1
     for j in range(0, np.size(time_domain)):
-        if theoretical_reliability[j] < random_value:
-            failure_time.append(time_domain[j])
-            break
-        working_devices[j] += 1
+        if operating == 1:
+            if theoretical_reliability[j] < random_value:
+                failure_time = j
+                operating = 0
+                if repair_random_number[i] <= 0.5:
+                    # Soft case, fast repair
+                    time_to_repair = repair_time[0]*repair_random_number[i]
+                else:
+                    # Hard case, takes time to repair
+                    time_to_repair = repair_time[1]*repair_random_number[i]
+            working_devices[j] += 1
+        elif operating == 0:
+            if j > time_to_repair + failure_time:
+                # Reset state and add new failure time
+                operating = 1
+                random_value = random_numbers[2*i]
 
 plt.figure()
-plt.plot(time_domain, theoretical_reliability, label="Theoretical value")
+plt.plot(time_domain, theoretical_reliability, label="Assuming no repair")
 plt.plot(time_domain, working_devices / runs, '.', markersize=2, label="Monte-Carlo Simulation")
 plt.xlabel("Time, t, [days]")
 plt.ylabel("Reliability, R, []")
