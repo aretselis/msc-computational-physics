@@ -62,3 +62,34 @@ ax.set_ylabel("y, [normalized units]")
 ax.set_title("Lagrange points for Didymos-Dimorphos")
 ax.grid()
 fig.savefig("Lagrange_points_loc.pdf", format='pdf')
+
+# Use physical units
+
+for i in range(len(Lx)):
+    Lx[i] = Lx[i] * r
+    Ly[i] = Ly[i] * r
+
+# Print locations
+
+for i in range(len(Lx)):
+    print("L"+str(i+1)+" location [m]: x = " + str(Lx[i]) +"  y = " + str(Ly[i]))
+
+dimorphos_object = plt.Circle((1180-mu,0.0), R_dimorphos, color='r')
+didimos_object = plt.Circle((-mu,0.0), R_didimos, color='blue')
+
+# Plot for physical units
+
+fig2, ax2 = plt.subplots()
+ax2.scatter(Lx, Ly)
+ax2.add_patch(didimos_object)
+ax2.add_patch(dimorphos_object)
+ax2.axis('equal')
+ax2.legend(['Didymos', 'Dimorphos'])
+n = ["L1", "L2", "L3", "L4", "L5"]
+for i, txt in enumerate(n):
+    ax2.annotate(txt, (Lx[i], Ly[i]+0.03))
+ax2.set_xlabel("x, [m]")
+ax2.set_ylabel("y, [m]")
+ax2.set_title("Lagrange points for Didymos-Dimorphos")
+ax2.grid()
+fig2.savefig("Lagrange_points_loc_physical.pdf", format='pdf')
