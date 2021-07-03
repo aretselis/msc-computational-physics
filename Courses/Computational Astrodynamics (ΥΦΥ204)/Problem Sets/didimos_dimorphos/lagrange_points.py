@@ -15,7 +15,7 @@ Lx = []
 # Compute L1, L2, L3
 
 Lx.append(1 - mu - a + pow(a, 2) / 3 + pow(a, 3) / 9 + 23 * pow(a, 4) / 81)  # L1
-Lx.append(1 - mu + a + pow(a, 2) / 3 - pow(a, 3) / 9 - 23 * pow(a, 4) / 81)  # L2
+Lx.append(1 - mu + a + pow(a, 2) / 3 - pow(a, 3) / 9 - 31 * pow(a, 4) / 81)  # L2
 Lx.append(-1 - mu + 7*mu/(12*(1-mu)) - 7*pow(mu/(1-mu), 2)/12 + 13223*pow(mu/(1-mu), 3)/20736)  # L3
 
 Ly = [0.0, 0.0, 0.0]
