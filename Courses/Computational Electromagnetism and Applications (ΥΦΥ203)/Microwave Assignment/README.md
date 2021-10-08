@@ -6,7 +6,7 @@ This is the directory containing the project assignment for the Computational El
 
 ## Project Description
 
-For this assignment, one has to simulate the heating of a plate containing food inside a microwave oven using the Finite Differences Time Domain (FDTD) method. The plate is disc shaped and contains a disc-shaped piece of meat and two potatoes shaped like spheres, forming the so called "Mickey's Face". Four simulations are to be performed, each one rotating the plate by 90 degrees inside the microwave oven. For each simulation, the SAR is to be calculated for the food items using the corresponding voxels. Finally, the unifomity or non-uniformity of the heating inside the microwave oven is to be examined inside the microwave oven.
+For this assignment, one has to simulate the heating of a plate containing food inside a microwave oven using the Finite Differences Time Domain (FDTD) method. The plate is disc shaped and contains a disc-shaped piece of meat and two potatoes shaped like spheres, forming the so called "Mickey's Face". Four simulations are to be performed, each one rotating the plate by 90 degrees inside the microwave oven. For each simulation, the SAR is to be calculated for the food items using the corresponding voxels. Finally, the uniformity or non-uniformity of the heating inside the microwave oven is to be examined inside the microwave oven.
 
 ### Personal Solution
 
