@@ -5,8 +5,7 @@
 In this directory readers can find the following folders:
 
 1. **Class Source Code**, which includes problems solved in class throughout the semester.
-2. **Problem Sets**, which includes descriptions and solutions to the weekly problem sets given by the instructors of the course. 
-3. **didimos_dimorphos_project**, which includes the final project for the class about the Didimos-Dimorphos system.
+2. **Problem Sets**, which includes descriptions and solutions to the weekly problem sets given by the instructors of the course. This directory also includes the final project for the class about the Didimos-Dimorphos system.
 
 Note that all of the above were completed as part of my normal workload during the spring semester of the academic year 2020/2021.
 
