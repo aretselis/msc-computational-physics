@@ -25,7 +25,7 @@ Computational Astrodynamics (7.5 ECTS credits) is one of the compulsory elective
 9. **Restricted three body problem:** Fixed/Rotating reference frames, normalization of units, Jacobi integrals, Lagrange points, Motion about Lagrange points.
 
 
-_Course syllabus as extracted from https://qa.auth.gr/ and the professor's website. 
+_Course syllabus as extracted from https://qa.auth.gr/ and the professor's website._ 
 
 ## Class Resources
 
